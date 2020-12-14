@@ -910,6 +910,40 @@ def pz_3():
                 + developer_ammortization_deductions_sum\
                 + developer_electricity_costs_sum + developers_pay_accrual
 
+    # developers_costs_data_table
+    print("INSERT DEV_COST_DATA_TABLE FILE\n")
+    workbook = xlsxwriter.Workbook(f'developers_costs_data_table_{preset}.xlsx')
+    worksheet = workbook.add_worksheet()
+
+    format = workbook.add_format()
+    format_header = workbook.add_format()
+
+    format.set_border()
+    format.set_align('center')
+    format.set_align('vcenter')
+
+    format_header.set_border()
+    format_header.set_align('center')
+    format_header.set_align('vcenter')
+    format_header.set_text_wrap()
+
+
+    developers_costs_data_table_header = ["Найменування посади", "Місячний посадовий оклад, грн.", "Оплата за робочий день, грн.", "Число днів роботи ", "Витрати назаробітну плату, грн."]
+    row = 0
+    for col in range(0, len(developers_costs_data_table_header)):
+        worksheet.write(row, col, developers_costs_data_table_header[col], format_header)
+
+    row += 1
+
+    for row_i, [name, monthly, days_worked_total], amount_daily, dev_cost in zip(range(0, len(developers_costs_data)), developers_costs_data, developers_daily, developers_cost):
+        print(f"{row_i}, {name}, {monthly}, {days_worked_total}, {amount_daily}, {dev_cost}")
+        arr_ = [name, monthly, days_worked_total, amount_daily, dev_cost]
+        for col_i, val in zip(range(0, len(arr_)), arr_):
+            worksheet.write(row_i + row, col_i, val, format)
+    # TODO: add developers_cost_total row
+    row += len(developers_costs_data)
+
+    workbook.close()
     t = 4
 
 
