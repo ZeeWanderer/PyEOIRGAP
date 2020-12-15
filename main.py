@@ -766,7 +766,7 @@ def compute_nm_am_deductions(usage_time_in_months, balance, norm):
 
 
 def compute_dev_use_time(usage_time_in_months, balance, years):
-    val = balance / years / 12 * usage_time_in_months
+    val = balance / years * usage_time_in_months / 12
     return val
 
 def compute_dev_nm_use_time(usage_time_in_months, balance, norm):
@@ -854,19 +854,21 @@ def pz_3():
     self_cost = production_costs * (1 + planned_sale_costs)
     # Part 1
     transport_coeff = 1.1
-    parts_cost_data = [["Бумага для друку", 200, 24.90 / 100],
-                       ["Картридж для принтера", 2, 350],
+    parts_cost_data = [["Бумага для друку", 500, 24.90 / 100],
+                       ["Картридж для принтера", 2, 600],
                        ["Носії для здачі копій", 2, 15]]
     parts_cost = [n * c * transport_coeff for _, n, c in parts_cost_data]
     parts_cost_sum = sum(parts_cost)
 
-    average_days_per_month = 20
-    develop_time = average_days_per_month * 2
-    develop_time_months = develop_time / 40
-    develop_time_hours = develop_time * 8
+    average_days_per_month = 20.0
+    develop_time_months = 2.0
+    hours_per_day = 8.0
+
+    develop_time_days = average_days_per_month * develop_time_months
+    develop_time_hours = develop_time_days * hours_per_day
     # [[name, monthly, days worked total]]
-    developers_costs_data = [["Инженер", 15000, develop_time],
-                             ["Керівник проекту", 20000, develop_time]]
+    developers_costs_data = [["Инженер", 15000, develop_time_days],
+                             ["Керівник проекту", 20000, develop_time_days]]
     # [[daily]]
     developers_daily = [monthly / average_days_per_month for _, monthly, days in developers_costs_data]
     # [[cost]]
@@ -877,29 +879,30 @@ def pz_3():
     developers_additional_pay = developers_cost_total * additional_pay_norm
     developers_pay_accrual = (developers_additional_pay + main_costs_total) * 0.22
 
-    developer_ammortization_deductions_data = [["ПК", 10000, 2],
-                                               ["ПК", 10000, 2],
-                                               ["Принтер", 6000, 2],
-                                               ["Будівля", 100000, 20]]
+    developer_ammortization_deductions_data = [["ПК", 10000, 2, develop_time_months],
+                                               ["ПК", 10000, 2, develop_time_months],
+                                               ["Принтер", 6000, 2, (500 * 1/6)/60/8/20],  # 500 pages, 6 pages per minute
+                                               ["Будівля", 100000, 20, develop_time_months],
+                                               ["Меблі", 15000, 4, develop_time_months]]
 
-    developer_ammortization_deductions_data_nm = [["ПЗ", 7000, 2]]
+    developer_ammortization_deductions_data_nm = [["ПЗ", 7000, 2, develop_time_months]]
 
-    developer_ammortization_deductions_nm = [compute_dev_nm_use_time(develop_time_months, base_cost, nonmaterial_ammortization_norm) for
-                                          name, base_cost, _ in
+    developer_ammortization_deductions_nm = [compute_dev_nm_use_time(time_months, base_cost, nonmaterial_ammortization_norm) for
+                                          name, base_cost, _, time_months in
                                           developer_ammortization_deductions_data_nm]
 
-    developer_ammortization_deductions = [compute_dev_use_time(develop_time_months, base_cost, expl_time) for
-                                          name, base_cost, expl_time in
+    developer_ammortization_deductions = [compute_dev_use_time(time_months, base_cost, expl_time) for
+                                          name, base_cost, expl_time, time_months in
                                           developer_ammortization_deductions_data]
     developer_ammortization_deductions_sum = sum(developer_ammortization_deductions) + sum(developer_ammortization_deductions_nm)
 
-    developer_kpd_data = [0.87, 0.9, ]
-    developer_electricity_costs_data = [["ПК", 0.2],
-                                        ["ПК", 0.2],
-                                        ["Лампочки", 0.1],
-                                        ["Принтер", 0.1]]
+    developer_kpd_data = [0.87, 0.87, 0.9, 0.9]
+    developer_electricity_costs_data = [["ПК", 0.2, develop_time_hours],
+                                        ["ПК", 0.2, develop_time_hours],
+                                        ["Лампочки", 0.1, develop_time_hours/2],
+                                        ["Принтер", 0.1, (500 * 1/6)/60]]  # 500 pages, 6 pages per minute
 
-    developer_electricity_costs = [kw_usage * develop_time_hours * kv_cost * kvpi / kpd for [_, kw_usage], kpd in
+    developer_electricity_costs = [kw_usage * time_hours * kv_cost * kvpi / kpd for [_, kw_usage, time_hours], kpd in
                                    zip(developer_electricity_costs_data, developer_kpd_data)]
 
     developer_electricity_costs_sum = sum(developer_electricity_costs)
