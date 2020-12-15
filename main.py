@@ -796,6 +796,9 @@ def pz_t():
     t = 10
 
 
+
+
+
 def pz_3():
     # Part 2
     nonmaterial_ammortization_norm = 0.12
@@ -852,11 +855,14 @@ def pz_3():
                        + electricity_costs_sum
 
     self_cost = production_costs * (1 + planned_sale_costs)
+
+
+
     # Part 1
     transport_coeff = 1.1
     parts_cost_data = [["Бумага для друку", 500, 24.90 / 100],
                        ["Картридж для принтера", 2, 600],
-                       ["Носії для здачі копій", 2, 15]]
+                       ["Диск для здачі копій", 2, 30]]
     parts_cost = [n * c * transport_coeff for _, n, c in parts_cost_data]
     parts_cost_sum = sum(parts_cost)
 
@@ -879,13 +885,13 @@ def pz_3():
     developers_additional_pay = developers_cost_total * additional_pay_norm
     developers_pay_accrual = (developers_additional_pay + main_costs_total) * 0.22
 
-    developer_ammortization_deductions_data = [["ПК", 10000, 2, develop_time_months],
-                                               ["ПК", 10000, 2, develop_time_months],
-                                               ["Принтер", 6000, 2, (500 * 1/6)/60/8/20],  # 500 pages, 6 pages per minute
-                                               ["Будівля", 100000, 20, develop_time_months],
-                                               ["Меблі", 15000, 4, develop_time_months]]
+    developer_ammortization_deductions_data = [["ПК", 10_000, 2, develop_time_months],
+                                               ["ПК", 10_000, 2, develop_time_months],
+                                               ["Принтер", 6_000, 2, (500 * 1/6)/60/8/20],  # 500 pages, 6 pages per minute
+                                               ["Будівля", 100_000, 20, develop_time_months],
+                                               ["Меблі", 22_000, 4, develop_time_months]]
 
-    developer_ammortization_deductions_data_nm = [["ПЗ", 7000, 2, develop_time_months]]
+    developer_ammortization_deductions_data_nm = [["ПЗ", 7_000, 2, develop_time_months]]
 
     developer_ammortization_deductions_nm = [compute_dev_nm_use_time(time_months, base_cost, nonmaterial_ammortization_norm) for
                                           name, base_cost, _, time_months in
@@ -912,6 +918,8 @@ def pz_3():
     all_developer_costs = parts_cost_sum + developers_cost_total + developer_other_costs\
                 + developer_ammortization_deductions_sum\
                 + developer_electricity_costs_sum + developers_pay_accrual
+
+    default_tables_gap = 5
 
     # developers_costs_data_table
     print("INSERT DEV_COST_DATA_TABLE FILE\n")
@@ -943,8 +951,63 @@ def pz_3():
         arr_ = [name, monthly, days_worked_total, amount_daily, dev_cost]
         for col_i, val in zip(range(0, len(arr_)), arr_):
             worksheet.write(row_i + row, col_i, val, format)
-    # TODO: add developers_cost_total row
+
     row += len(developers_costs_data)
+    worksheet.merge_range(row, 0, row, 3, "Всього", format)
+    worksheet.write(row, 4, developers_cost_total, format)
+
+    row += default_tables_gap
+
+    # TODO: all tables are written in one .xlsx file for now
+    # developer_ammortization_deductions_data_table
+    print("INSERT DEV_AMORTISATION_DEDUCTIONS_DATA_TABLE FILE\n")
+    developer_ammortization_deductions_data_table = ["Найменування обладнання", "Балансова вартість, грн", "Строк корисного використання, років", "Термін використання обладнання, місяців", "Амортизаційні відрахування, грн"]
+
+    for col in range(0, len(developer_ammortization_deductions_data_table)):
+        worksheet.write(row, col, developer_ammortization_deductions_data_table[col], format_header)
+
+    row += 1
+
+    for row_i, [name, balance_cost, usage_term, usage_time], a_deductions in \
+            zip(range(0, len(developer_ammortization_deductions_data)), developer_ammortization_deductions_data, developer_ammortization_deductions):
+        arr_ = [name, balance_cost, usage_term, usage_time, a_deductions]
+        for col_i, val in zip(range(0, len(arr_)), arr_):
+            worksheet.write(row_i + row, col_i, val, format)
+
+    row += len(developer_ammortization_deductions_data)
+    for row_i, [nm_name, nm_balance_cost, nm_usage_term, nm_usage_time], nm_a_deductions in \
+            zip(range(0, len(developer_ammortization_deductions_data_nm)), developer_ammortization_deductions_data_nm, developer_ammortization_deductions_nm):
+        arr_ = [nm_name, nm_balance_cost, nm_usage_term, nm_usage_time, nm_a_deductions]
+        for col_i, val in zip(range(0, len(arr_)), arr_):
+            worksheet.write(row_i + row, col_i, val, format)
+
+    row += len(developer_ammortization_deductions_data_nm)
+    worksheet.merge_range(row, 0, row, 3, "Всього", format)
+    worksheet.write(row, 4, developer_ammortization_deductions_sum, format)
+
+    row += default_tables_gap
+
+    # developer_electricity_costs_data_table
+    print("INSERT DEV_ELECTRICITY_COSTS_DATA_TABLE FILE\n")
+    developer_electricity_costs_data_table = ["Найменування обладнання", "Встановлена потужність, кВт.", "Тривалість роботи, год.", "Сума, грн"]
+    for col in range(0, len(developer_electricity_costs_data_table)):
+        worksheet.write(row, col, developer_electricity_costs_data_table[col], format_header)
+
+    row += 1
+    # TODO: add the example of calculation to tables
+    for row_i, [name, power, usage_time], kpd, electricity_costs in \
+        zip(range(0, len(developer_electricity_costs_data)), developer_electricity_costs_data, developer_kpd_data, developer_electricity_costs):
+        arr_ = [name, power, usage_time, electricity_costs]
+        for col_i, val in zip(range(0, len(arr_)), arr_):
+            worksheet.write(row_i + row, col_i, val, format)
+
+    row += len(developer_electricity_costs_data)
+    worksheet.merge_range(row, 0, row, 2, "Всього", format)
+    worksheet.write(row, 3, developer_ammortization_deductions_sum, format)
+
+    row += default_tables_gap
+
+    parts_cost_data_table_header = ["Найменування комплектуючих", "Кількість, шт.", "Ціна за штуку, грн", "Сума, грн"]
 
     workbook.close()
     t = 4
