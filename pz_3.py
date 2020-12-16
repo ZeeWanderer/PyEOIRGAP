@@ -205,6 +205,7 @@ def pz_3(preset):
     # TODO: all tables are written in one .xlsx file for now
     # MARK: developer_ammortization_deductions_data_table GENERATION
     print("INSERT DEV_AMORTISATION_DEDUCTIONS_DATA_TABLE FILE\n")
+    max_name_col_width = 0
     developer_ammortization_deductions_data_table = ["Найменування обладнання", "Балансова вартість, грн", "Строк корисного використання, років", "Термін використання обладнання, місяців", "Амортизаційні відрахування, грн"]
 
     for col in range(0, len(developer_ammortization_deductions_data_table)):
@@ -215,6 +216,7 @@ def pz_3(preset):
     for row_i, [name, balance_cost, usage_term, usage_time], a_deductions in \
             zip(range(0, len(developer_ammortization_deductions_data)), developer_ammortization_deductions_data, developer_ammortization_deductions):
         arr_ = [name, balance_cost, usage_term, usage_time, a_deductions]
+        max_name_col_width = max(max_name_col_width,len(name))
         for col_i, val in zip(range(0, len(arr_)), arr_):
             worksheet.write(row_i + row, col_i, val, format)
 
@@ -222,6 +224,7 @@ def pz_3(preset):
     for row_i, [nm_name, nm_balance_cost, nm_usage_term, nm_usage_time], nm_a_deductions in \
             zip(range(0, len(developer_ammortization_deductions_data_nm)), developer_ammortization_deductions_data_nm, developer_ammortization_deductions_nm):
         arr_ = [nm_name, nm_balance_cost, nm_usage_term, nm_usage_time, nm_a_deductions]
+        max_name_col_width = max(max_name_col_width, len(nm_name)+1)
         for col_i, val in zip(range(0, len(arr_)), arr_):
             worksheet.write(row_i + row, col_i, val, format)
 
@@ -242,6 +245,7 @@ def pz_3(preset):
     for row_i, [name, power, usage_time], kpd, electricity_costs in \
         zip(range(0, len(developer_electricity_costs_data)), developer_electricity_costs_data, developer_kpd_data, developer_electricity_costs):
         arr_ = [name, power, usage_time, electricity_costs]
+        max_name_col_width = max(max_name_col_width, len(name)+1)
         for col_i, val in zip(range(0, len(arr_)), arr_):
             worksheet.write(row_i + row, col_i, val, format)
 
@@ -251,8 +255,23 @@ def pz_3(preset):
 
     row += default_tables_gap
 
-    # WTF: is this?
+    # WTF: is total needed here?
+    print("INSERT PARTS_COST_DATA_TABLE FILE\n")
     parts_cost_data_table_header = ["Найменування комплектуючих", "Кількість, шт.", "Ціна за штуку, грн", "Сума, грн"]
+    for col in range(0, len(parts_cost_data_table_header)):
+        worksheet.write(row, col, parts_cost_data_table_header[col], format_header)
+
+    row += 1
+    for row_i, [name, unit, price_per_unit] in \
+        zip(range(0, len(parts_cost_data)), parts_cost_data):
+        arr_ = [name, unit, price_per_unit, unit*price_per_unit]
+        max_name_col_width = max(max_name_col_width, len(name)+1)
+        for col_i, val in zip(range(0, len(arr_)), arr_):
+            worksheet.write(row_i + row, col_i, val, format)
+
+    row += default_tables_gap
+
+    worksheet.set_column(0, 0, max_name_col_width)
 
     workbook.close()
     t = 4
