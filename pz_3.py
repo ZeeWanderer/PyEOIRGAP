@@ -28,14 +28,14 @@ def pz_t():
     material_cost = 220
     additional_w_pay = 100
     ammortization = 50
-    yearly_cost = 4.*10**6
+    yearly_cost = 4. * 10 ** 6
 
     realization_cost_without_pdv = 1200 / 1.2
 
-    dohid = realization_cost_without_pdv*products
-    other_costs = yearly_cost - (material_cost+additional_w_pay*1.22+ammortization)*products
+    dohid = realization_cost_without_pdv * products
+    other_costs = yearly_cost - (material_cost + additional_w_pay * 1.22 + ammortization) * products
 
-    podatok = (dohid - yearly_cost)*0.18
+    podatok = (dohid - yearly_cost) * 0.18
 
     all_costs = yearly_cost + podatok
 
@@ -70,8 +70,8 @@ def pz_3(preset):
     ammortization_deductions_data_nm = [["ПЗ", 7000, 2, time_sum / 8 / 20]]
 
     ammortization_deductions_nm = [compute_nm_am_deductions(time_usage, base_cost, nonmaterial_ammortization_norm) for
-                                name, base_cost, _, time_usage in
-                                ammortization_deductions_data_nm]
+                                   name, base_cost, _, time_usage in
+                                   ammortization_deductions_data_nm]
 
     ammortization_deductions = [compute_am_deductions(time_usage, base_cost, expl_time) for
                                 name, base_cost, expl_time, time_usage in
@@ -99,8 +99,6 @@ def pz_3(preset):
                        + electricity_costs_sum
 
     self_cost = production_costs * (1 + planned_sale_costs)
-
-
 
     # MARK: Part 1
     transport_coeff = 1.1
@@ -131,26 +129,29 @@ def pz_3(preset):
 
     developer_ammortization_deductions_data = [["ПК", 10_000, 2, develop_time_months],
                                                ["ПК", 10_000, 2, develop_time_months],
-                                               ["Принтер", 6_000, 2, (500 * 1/6)/60/8/20],  # 500 pages, 6 pages per minute
+                                               ["Принтер", 6_000, 2, (500 * 1 / 6) / 60 / 8 / 20],
+                                               # 500 pages, 6 pages per minute
                                                ["Будівля", 100_000, 20, develop_time_months],
                                                ["Меблі", 22_000, 4, develop_time_months]]
 
     developer_ammortization_deductions_data_nm = [["ПЗ", 7_000, 2, develop_time_months]]
 
-    developer_ammortization_deductions_nm = [compute_dev_nm_use_time(time_months, base_cost, nonmaterial_ammortization_norm) for
-                                          name, base_cost, _, time_months in
-                                          developer_ammortization_deductions_data_nm]
+    developer_ammortization_deductions_nm = [
+        compute_dev_nm_use_time(time_months, base_cost, nonmaterial_ammortization_norm) for
+        name, base_cost, _, time_months in
+        developer_ammortization_deductions_data_nm]
 
     developer_ammortization_deductions = [compute_dev_use_time(time_months, base_cost, expl_time) for
                                           name, base_cost, expl_time, time_months in
                                           developer_ammortization_deductions_data]
-    developer_ammortization_deductions_sum = sum(developer_ammortization_deductions) + sum(developer_ammortization_deductions_nm)
+    developer_ammortization_deductions_sum = sum(developer_ammortization_deductions) + sum(
+        developer_ammortization_deductions_nm)
 
     developer_kpd_data = [0.87, 0.87, 0.9, 0.9]
     developer_electricity_costs_data = [["ПК", 0.2, develop_time_hours],
                                         ["ПК", 0.2, develop_time_hours],
-                                        ["Лампочки", 0.1, develop_time_hours/2],
-                                        ["Принтер", 0.1, (500 * 1/6)/60]]  # 500 pages, 6 pages per minute
+                                        ["Лампочки", 0.1, develop_time_hours / 2],
+                                        ["Принтер", 0.1, (500 * 1 / 6) / 60]]  # 500 pages, 6 pages per minute
 
     developer_electricity_costs = [kw_usage * time_hours * kv_cost * kvpi / kpd for [_, kw_usage, time_hours], kpd in
                                    zip(developer_electricity_costs_data, developer_kpd_data)]
@@ -159,9 +160,9 @@ def pz_3(preset):
 
     developer_other_costs = other_costs_coeff * developers_cost_total
 
-    all_developer_costs = parts_cost_sum + developers_cost_total + developer_other_costs\
-                + developer_ammortization_deductions_sum\
-                + developer_electricity_costs_sum + developers_pay_accrual
+    all_developer_costs = parts_cost_sum + developers_cost_total + developer_other_costs \
+                          + developer_ammortization_deductions_sum \
+                          + developer_electricity_costs_sum + developers_pay_accrual
 
     default_tables_gap = 5
 
@@ -182,15 +183,18 @@ def pz_3(preset):
     format_header.set_align('vcenter')
     format_header.set_text_wrap()
 
-
-    developers_costs_data_table_header = ["Найменування посади", "Місячний посадовий оклад, грн.", "Оплата за робочий день, грн.", "Число днів роботи ", "Витрати назаробітну плату, грн."]
+    developers_costs_data_table_header = ["Найменування посади", "Місячний посадовий оклад, грн.",
+                                          "Оплата за робочий день, грн.", "Число днів роботи ",
+                                          "Витрати назаробітну плату, грн."]
     row = 0
     for col in range(0, len(developers_costs_data_table_header)):
         worksheet.write(row, col, developers_costs_data_table_header[col], format_header)
 
     row += 1
 
-    for row_i, [name, monthly, days_worked_total], amount_daily, dev_cost in zip(range(0, len(developers_costs_data)), developers_costs_data, developers_daily, developers_cost):
+    for row_i, [name, monthly, days_worked_total], amount_daily, dev_cost in zip(range(0, len(developers_costs_data)),
+                                                                                 developers_costs_data,
+                                                                                 developers_daily, developers_cost):
         print(f"{row_i}, {name}, {monthly}, {days_worked_total}, {amount_daily}, {dev_cost}")
         arr_ = [name, monthly, days_worked_total, amount_daily, dev_cost]
         for col_i, val in zip(range(0, len(arr_)), arr_):
@@ -206,7 +210,11 @@ def pz_3(preset):
     # MARK: developer_ammortization_deductions_data_table GENERATION
     print("INSERT DEV_AMORTISATION_DEDUCTIONS_DATA_TABLE FILE\n")
     max_name_col_width = 0
-    developer_ammortization_deductions_data_table = ["Найменування обладнання", "Балансова вартість, грн", "Строк корисного використання, років", "Термін використання обладнання, місяців", "Амортизаційні відрахування, грн"]
+    name_col_padding = 1
+    developer_ammortization_deductions_data_table = ["Найменування обладнання", "Балансова вартість, грн",
+                                                     "Строк корисного використання, років",
+                                                     "Термін використання обладнання, місяців",
+                                                     "Амортизаційні відрахування, грн"]
 
     for col in range(0, len(developer_ammortization_deductions_data_table)):
         worksheet.write(row, col, developer_ammortization_deductions_data_table[col], format_header)
@@ -214,17 +222,19 @@ def pz_3(preset):
     row += 1
 
     for row_i, [name, balance_cost, usage_term, usage_time], a_deductions in \
-            zip(range(0, len(developer_ammortization_deductions_data)), developer_ammortization_deductions_data, developer_ammortization_deductions):
+            zip(range(0, len(developer_ammortization_deductions_data)), developer_ammortization_deductions_data,
+                developer_ammortization_deductions):
         arr_ = [name, balance_cost, usage_term, usage_time, a_deductions]
-        max_name_col_width = max(max_name_col_width,len(name))
+        max_name_col_width = max(max_name_col_width, len(name))
         for col_i, val in zip(range(0, len(arr_)), arr_):
             worksheet.write(row_i + row, col_i, val, format)
 
     row += len(developer_ammortization_deductions_data)
     for row_i, [nm_name, nm_balance_cost, nm_usage_term, nm_usage_time], nm_a_deductions in \
-            zip(range(0, len(developer_ammortization_deductions_data_nm)), developer_ammortization_deductions_data_nm, developer_ammortization_deductions_nm):
+            zip(range(0, len(developer_ammortization_deductions_data_nm)), developer_ammortization_deductions_data_nm,
+                developer_ammortization_deductions_nm):
         arr_ = [nm_name, nm_balance_cost, nm_usage_term, nm_usage_time, nm_a_deductions]
-        max_name_col_width = max(max_name_col_width, len(nm_name)+1)
+        max_name_col_width = max(max_name_col_width, len(nm_name))
         for col_i, val in zip(range(0, len(arr_)), arr_):
             worksheet.write(row_i + row, col_i, val, format)
 
@@ -236,16 +246,18 @@ def pz_3(preset):
 
     # MARK: developer_electricity_costs_data_table GENERATION
     print("INSERT DEV_ELECTRICITY_COSTS_DATA_TABLE FILE\n")
-    developer_electricity_costs_data_table = ["Найменування обладнання", "Встановлена потужність, кВт.", "Тривалість роботи, год.", "Сума, грн"]
+    developer_electricity_costs_data_table = ["Найменування обладнання", "Встановлена потужність, кВт.",
+                                              "Тривалість роботи, год.", "Сума, грн"]
     for col in range(0, len(developer_electricity_costs_data_table)):
         worksheet.write(row, col, developer_electricity_costs_data_table[col], format_header)
 
     row += 1
     # TODO: add the example of calculation to tables
     for row_i, [name, power, usage_time], kpd, electricity_costs in \
-        zip(range(0, len(developer_electricity_costs_data)), developer_electricity_costs_data, developer_kpd_data, developer_electricity_costs):
+            zip(range(0, len(developer_electricity_costs_data)), developer_electricity_costs_data, developer_kpd_data,
+                developer_electricity_costs):
         arr_ = [name, power, usage_time, electricity_costs]
-        max_name_col_width = max(max_name_col_width, len(name)+1)
+        max_name_col_width = max(max_name_col_width, len(name))
         for col_i, val in zip(range(0, len(arr_)), arr_):
             worksheet.write(row_i + row, col_i, val, format)
 
@@ -263,15 +275,15 @@ def pz_3(preset):
 
     row += 1
     for row_i, [name, unit, price_per_unit] in \
-        zip(range(0, len(parts_cost_data)), parts_cost_data):
-        arr_ = [name, unit, price_per_unit, unit*price_per_unit]
-        max_name_col_width = max(max_name_col_width, len(name)+1)
+            zip(range(0, len(parts_cost_data)), parts_cost_data):
+        arr_ = [name, unit, price_per_unit, unit * price_per_unit]
+        max_name_col_width = max(max_name_col_width, len(name))
         for col_i, val in zip(range(0, len(arr_)), arr_):
             worksheet.write(row_i + row, col_i, val, format)
 
     row += default_tables_gap
 
-    worksheet.set_column(0, 0, max_name_col_width)
+    worksheet.set_column(0, 0, max_name_col_width + name_col_padding)
 
     workbook.close()
     t = 4
