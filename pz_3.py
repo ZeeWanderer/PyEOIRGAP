@@ -274,12 +274,19 @@ def pz_3(preset):
         worksheet.write(row, col, parts_cost_data_table_header[col], format_header)
 
     row += 1
-    for row_i, [name, unit, price_per_unit] in \
+    table_total = 0
+    for row_i, [name, units, price_per_unit] in \
             zip(range(0, len(parts_cost_data)), parts_cost_data):
-        arr_ = [name, unit, price_per_unit, unit * price_per_unit]
+        cost = units * price_per_unit
+        arr_ = [name, units, price_per_unit, cost]
+        table_total += cost
         max_name_col_width = max(max_name_col_width, len(name))
         for col_i, val in zip(range(0, len(arr_)), arr_):
             worksheet.write(row_i + row, col_i, val, format)
+
+    row += len(parts_cost_data)
+    worksheet.merge_range(row, 0, row, 2, "Всього", format)
+    worksheet.write(row, 3, table_total, format)
 
     row += default_tables_gap
 
