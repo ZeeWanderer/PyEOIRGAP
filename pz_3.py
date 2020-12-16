@@ -1,5 +1,5 @@
-import util
 import xlsxwriter
+from util import get_sum_string, get_mul_sum_string
 
 
 def compute_am_deductions(usage_time_in_months, balance, years):
@@ -15,6 +15,7 @@ def compute_nm_am_deductions(usage_time_in_months, balance, norm):
 def compute_dev_use_time(usage_time_in_months, balance, years):
     val = balance / years * usage_time_in_months / 12
     return val
+
 
 def compute_dev_nm_use_time(usage_time_in_months, balance, norm):
     g = balance * (usage_time_in_months / 12) * norm
@@ -34,7 +35,6 @@ def pz_t():
     dohid = realization_cost_without_pdv*products
     other_costs = yearly_cost - (material_cost+additional_w_pay*1.22+ammortization)*products
 
-
     podatok = (dohid - yearly_cost)*0.18
 
     all_costs = yearly_cost + podatok
@@ -44,7 +44,7 @@ def pz_t():
 
 
 def pz_3(preset):
-    # Part 2
+    # MARK: Part 2
     nonmaterial_ammortization_norm = 0.12
     other_costs_coeff = 2.0
 
@@ -102,7 +102,7 @@ def pz_3(preset):
 
 
 
-    # Part 1
+    # MARK: Part 1
     transport_coeff = 1.1
     parts_cost_data = [["Бумага для друку", 500, 24.90 / 100],
                        ["Картридж для принтера", 2, 600],
@@ -165,7 +165,7 @@ def pz_3(preset):
 
     default_tables_gap = 5
 
-    # developers_costs_data_table
+    # MARK: developers_costs_data_table GENERATION
     print("INSERT DEV_COST_DATA_TABLE FILE\n")
     workbook = xlsxwriter.Workbook(f'developers_costs_data_table_{preset}.xlsx')
     worksheet = workbook.add_worksheet()
@@ -203,7 +203,7 @@ def pz_3(preset):
     row += default_tables_gap
 
     # TODO: all tables are written in one .xlsx file for now
-    # developer_ammortization_deductions_data_table
+    # MARK: developer_ammortization_deductions_data_table GENERATION
     print("INSERT DEV_AMORTISATION_DEDUCTIONS_DATA_TABLE FILE\n")
     developer_ammortization_deductions_data_table = ["Найменування обладнання", "Балансова вартість, грн", "Строк корисного використання, років", "Термін використання обладнання, місяців", "Амортизаційні відрахування, грн"]
 
@@ -231,7 +231,7 @@ def pz_3(preset):
 
     row += default_tables_gap
 
-    # developer_electricity_costs_data_table
+    # MARK: developer_electricity_costs_data_table GENERATION
     print("INSERT DEV_ELECTRICITY_COSTS_DATA_TABLE FILE\n")
     developer_electricity_costs_data_table = ["Найменування обладнання", "Встановлена потужність, кВт.", "Тривалість роботи, год.", "Сума, грн"]
     for col in range(0, len(developer_electricity_costs_data_table)):
@@ -251,6 +251,7 @@ def pz_3(preset):
 
     row += default_tables_gap
 
+    # WTF: is this?
     parts_cost_data_table_header = ["Найменування комплектуючих", "Кількість, шт.", "Ціна за штуку, грн", "Сума, грн"]
 
     workbook.close()
