@@ -327,9 +327,10 @@ def pz_3(preset):
         worksheet.write(row, col, overall_costs_table_header[col], format_header)
 
     row += 1
-    for row_i, val_arr in zip(range(0, len(costs_name_col)), zip(*[costs_name_col, costs_symbol_col, costs_n_col, costs_comment_col])):
+    for row_i, val_arr in zip(range(0, len(costs_name_col)),
+                              zip(*[costs_name_col, costs_symbol_col, costs_n_col, costs_comment_col])):
         for col_i, val in zip(range(0, len(val_arr)), val_arr):
-            max_name_col_width = max(max_name_col_width, len(val)/2) if isinstance(val, str) else max_name_col_width
+            max_name_col_width = max(max_name_col_width, len(val) / 2) if isinstance(val, str) else max_name_col_width
             worksheet.write(row + row_i, col_i, val, format_header if isinstance(val, str) else format)
 
     row += len(overall_costs_table_header)
