@@ -255,10 +255,10 @@ def pz_3(preset):
 
     row += 1
     # TODO: add the example of calculation to tables
-    for row_i, [name, power, usage_time], kpd, electricity_costs in \
+    for row_i, [name, power, usage_time], kpd, electricity_cost in \
             zip(range(0, len(developer_electricity_costs_data)), developer_electricity_costs_data, developer_kpd_data,
                 developer_electricity_costs):
-        arr_ = [name, power, usage_time, electricity_costs]
+        arr_ = [name, power, usage_time, electricity_cost]
         max_name_col_width = max(max_name_col_width, len(name))
         for col_i, val in zip(range(0, len(arr_)), arr_):
             worksheet.write(row_i + row, col_i, val, format)
@@ -310,7 +310,8 @@ def pz_3(preset):
 
     row += 1
 
-    for row_i, [name, time, rank, price], worker_cost in zip(range(0, len(main_costs_data)), main_costs_data, main_costs):
+    for row_i, [name, time, rank, price], worker_cost in zip(range(0, len(main_costs_data)), main_costs_data,
+                                                             main_costs):
         arr_ = [name, time, rank, tariff_data[rank], price, worker_cost]
         for col_i, val in zip(range(0, len(arr_)), arr_):
             worksheet.write(row_i + row, col_i, val, format)
@@ -324,9 +325,9 @@ def pz_3(preset):
     # MARK: workers_costs_data_table GENERATION
     print("INSERT WORKERS_AMORTISATION_DEDUCTIONS_DATA_TABLE FILE\n")
     workers_ammortization_deductions_data_table = ["Найменування обладнання", "Балансова вартість, грн",
-                                                     "Строк корисного використання, років",
-                                                     "Термін використання обладнання, місяців",
-                                                     "Амортизаційні відрахування, грн"]
+                                                   "Строк корисного використання, років",
+                                                   "Термін використання обладнання, місяців",
+                                                   "Амортизаційні відрахування, грн"]
 
     for col in range(0, len(workers_ammortization_deductions_data_table)):
         worksheet.write(row, col, workers_ammortization_deductions_data_table[col], format_header)
@@ -344,7 +345,7 @@ def pz_3(preset):
     row += len(ammortization_deductions_data)
     for row_i, [nm_name, nm_balance_cost, nm_usage_term, nm_usage_time], nm_a_deductions in \
             zip(range(0, len(ammortization_deductions_data_nm)), ammortization_deductions_data_nm,
-               ammortization_deductions_nm):
+                ammortization_deductions_nm):
         arr_ = [nm_name, nm_balance_cost, nm_usage_term, nm_usage_time, nm_a_deductions]
         max_name_col_width = max(max_name_col_width, len(nm_name))
         for col_i, val in zip(range(0, len(arr_)), arr_):
@@ -357,28 +358,28 @@ def pz_3(preset):
     row += default_tables_gap
 
     # TODO: some bug with table below
-    # # MARK: workers_electricity_costs_data_table GENERATION
-    # print("INSERT WORKERS_ELECTRICITY_COSTS_DATA_TABLE FILE\n")
-    # workers_electricity_costs_data_table = ["Найменування обладнання", "Встановлена потужність, кВт.",
-    #                                           "Тривалість роботи, год.", "Сума, грн"]
-    # for col in range(0, len(workers_electricity_costs_data_table)):
-    #     worksheet.write(row, col, workers_electricity_costs_data_table[col], format_header)
-    #
-    # row += 1
-    # # TODO: add the example of calculation to tables
-    # for row_i, [name, power, usage_time], kpd, worker_electricity_costs in \
-    #         zip(range(0, len(electricity_costs_data)), electricity_costs_data, kpd_data,
-    #             electricity_costs):
-    #     arr_ = [name, power, usage_time, worker_electricity_costs]
-    #     max_name_col_width = max(max_name_col_width, len(name))
-    #     for col_i, val in zip(range(0, len(arr_)), arr_):
-    #         worksheet.write(row_i + row, col_i, val, format)
-    #
-    # row += len(electricity_costs_data)
-    # worksheet.merge_range(row, 0, row, 2, "Всього", format)
-    # worksheet.write(row, 3, electricity_costs_sum, format)
-    #
-    # row += default_tables_gap
+    # MARK: workers_electricity_costs_data_table GENERATION
+    print("INSERT WORKERS_ELECTRICITY_COSTS_DATA_TABLE FILE\n")
+    workers_electricity_costs_data_table = ["Найменування обладнання", "Встановлена потужність, кВт.",
+                                            "Тривалість роботи, год.", "Сума, грн"]
+    for col in range(0, len(workers_electricity_costs_data_table)):
+        worksheet.write(row, col, workers_electricity_costs_data_table[col], format_header)
+
+    row += 1
+    # TODO: add the example of calculation to tables
+    for row_i, [name, power, usage_time], kpd, worker_electricity_cost in \
+            zip(range(0, len(electricity_costs_data)), electricity_costs_data, kpd_data,
+                electricity_costs):
+        arr_ = [name, power, usage_time, worker_electricity_cost]
+        max_name_col_width = max(max_name_col_width, len(name))
+        for col_i, val in zip(range(0, len(arr_)), arr_):
+            worksheet.write(row_i + row, col_i, val, format)
+
+    row += len(electricity_costs_data)
+    worksheet.merge_range(row, 0, row, 2, "Всього", format)
+    worksheet.write(row, 3, electricity_costs_sum, format)
+
+    row += default_tables_gap
 
     # MARK: overall_costs_table_header GENERATION
     # TODO: verify this is all correct
