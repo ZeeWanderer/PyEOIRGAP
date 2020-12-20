@@ -54,13 +54,13 @@ def pz_3(preset):
                        ["Упаковування носія", 20.0 / 60, 2, 29.2]]
     main_costs = [price * time * tariff_data[rank] for name, time, rank, price in main_costs_data]
 
-    main_costs_total = sum(main_costs)
+    worker_costs_total = sum(main_costs)
 
     additional_pay_norm = 0.15
 
-    additional_pay = main_costs_total * additional_pay_norm
+    worker_additional_pay = worker_costs_total * additional_pay_norm
 
-    worker_pay_accrual = (additional_pay + main_costs_total) * 0.22
+    worker_pay_accrual = (worker_additional_pay + worker_costs_total) * 0.22
 
     time_sum = sum(list(zip(*main_costs_data))[1])
     ammortization_deductions_data = [["ПК", 10000, 2, time_sum / 8 / 20],
@@ -90,15 +90,16 @@ def pz_3(preset):
 
     electricity_costs_sum = sum(electricity_costs)
 
-    other_costs = other_costs_coeff * main_costs_total
+    other_costs = other_costs_coeff * worker_costs_total
 
     planned_sale_costs = .05
 
-    production_costs = main_costs_total + additional_pay + worker_pay_accrual \
+    production_costs = worker_costs_total + worker_additional_pay + worker_pay_accrual \
                        + ammortization_deductions_sum \
                        + electricity_costs_sum
+    sale_costs = production_costs * planned_sale_costs
 
-    self_cost = production_costs * (1 + planned_sale_costs)
+    self_cost = production_costs * sale_costs
 
     # MARK: Part 1
     transport_coeff = 1.1
@@ -125,7 +126,7 @@ def pz_3(preset):
     developers_cost_total = sum(developers_cost)
 
     developers_additional_pay = developers_cost_total * additional_pay_norm
-    developers_pay_accrual = (developers_additional_pay + main_costs_total) * 0.22
+    developers_pay_accrual = (developers_additional_pay + worker_costs_total) * 0.22
 
     developer_ammortization_deductions_data = [["ПК", 10_000, 2, develop_time_months],
                                                ["ПК", 10_000, 2, develop_time_months],
@@ -292,6 +293,7 @@ def pz_3(preset):
     row += default_tables_gap
 
     # MARK: overall_costs_table_header GENERATION
+    # TODO: verify this is all correct
     print("INSERT OVERALL_COSTS FILE\n")
     overall_costs_table_header = ["Стаття витрат", "Умовне позначення", "Сума, грн", "Примітка"]
     costs_name_col = ["1.Витрати на матеріали на одиницю продукції, грн",
@@ -316,10 +318,22 @@ def pz_3(preset):
                         "Sв",
                         "Взб",
                         "Sп"]
-    costs_n_col = [0, parts_cost_sum, electricity_costs_sum, developers_cost_total, developers_additional_pay,
-                   developers_pay_accrual, developer_ammortization_deductions_sum, ]
+    costs_n_col = [0, parts_cost_sum, electricity_costs_sum, worker_costs_total, worker_additional_pay,
+                   worker_pay_accrual, ammortization_deductions_sum, other_costs, production_costs, sale_costs,
+                   self_cost]
+    costs_comment_col = [""] * len(costs_n_col)
+
     for col in range(0, len(overall_costs_table_header)):
         worksheet.write(row, col, overall_costs_table_header[col], format_header)
+
+    row += 1
+    for row_i, val_arr in zip(range(0, len(costs_name_col)), zip(*[costs_name_col, costs_symbol_col, costs_n_col, costs_comment_col])):
+        for col_i, val in zip(range(0, len(val_arr)), val_arr):
+            max_name_col_width = max(max_name_col_width, len(val)/2) if isinstance(val, str) else max_name_col_width
+            worksheet.write(row + row_i, col_i, val, format_header if isinstance(val, str) else format)
+
+    row += len(overall_costs_table_header)
+    row += default_tables_gap
 
     worksheet.set_column(0, 0, max_name_col_width + name_col_padding)
 
