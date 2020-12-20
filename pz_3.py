@@ -267,6 +267,7 @@ def pz_3(preset):
 
     row += default_tables_gap
 
+    # MARK: parts_cost_data_table GENERATION
     # WTF: is total needed here?
     print("INSERT PARTS_COST_DATA_TABLE FILE\n")
     parts_cost_data_table_header = ["Найменування комплектуючих", "Кількість, шт.", "Ціна за штуку, грн", "Сума, грн"]
@@ -289,6 +290,36 @@ def pz_3(preset):
     worksheet.write(row, 3, table_total, format)
 
     row += default_tables_gap
+
+    # MARK: overall_costs_table_header GENERATION
+    print("INSERT OVERALL_COSTS FILE\n")
+    overall_costs_table_header = ["Стаття витрат", "Умовне позначення", "Сума, грн", "Примітка"]
+    costs_name_col = ["1.Витрати на матеріали на одиницю продукції, грн",
+                      "2. Витрати на комплектуючі на одиницю продукції, грн",
+                      "3. Витрати на силову електроенергію, грн",
+                      "4. Витрати на основну заробітну плату робітників, грн",
+                      "5. Витрати на додаткову заробітну плату робітників, грн",
+                      "6. Витрати на нарахування на заробітну плату робітників, грн",
+                      "7. Амортизаційні відрахування, грн",
+                      "8. Інші витрати, грн",
+                      "Виробнича собівартість",
+                      "9. Витрати на збут, грн",
+                      "Повна собівартість одиниці виробу"]
+    costs_symbol_col = ["М",
+                        "Кв",
+                        "Ве",
+                        "Зр",
+                        "Здод",
+                        "Зн",
+                        "А",
+                        "Взаг",
+                        "Sв",
+                        "Взб",
+                        "Sп"]
+    costs_n_col = [0, parts_cost_sum, electricity_costs_sum, developers_cost_total, developers_additional_pay,
+                   developers_pay_accrual, developer_ammortization_deductions_sum, ]
+    for col in range(0, len(overall_costs_table_header)):
+        worksheet.write(row, col, overall_costs_table_header[col], format_header)
 
     worksheet.set_column(0, 0, max_name_col_width + name_col_padding)
 
