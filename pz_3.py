@@ -1,25 +1,30 @@
 import xlsxwriter
-from util import get_sum_string, get_mul_sum_string
+
+from util import get_sum_string
 
 
-def compute_am_deductions(usage_time_in_months, balance, years):
+def compute_am_deductions(usage_time_in_months, balance, years, name):
     val = balance / years / 12 * usage_time_in_months
+    print(f"МатеріальнаАммортизація2[\"{name}\"] = {balance} / {years} / 12 * {usage_time_in_months} = {val}")
     return val
 
 
-def compute_nm_am_deductions(usage_time_in_months, balance, norm):
-    g = balance * (usage_time_in_months / 12) * norm
-    return g
+def compute_nm_am_deductions(usage_time_in_months, balance, norm, name):
+    val = balance * (usage_time_in_months / 12) * norm
+    print(f"НеМатеріальнаАммортизація2[\"{name}\"] = {balance} * ({usage_time_in_months} / 12) * {norm} = {val}")
+    return val
 
 
-def compute_dev_use_time(usage_time_in_months, balance, years):
+def compute_dev_use_time(usage_time_in_months, balance, years, name):
     val = balance / years * usage_time_in_months / 12
+    print(f"МатеріальнаАммортизація1[\"{name}\"] = {balance} / {years} * {usage_time_in_months} / 12 = {val}")
     return val
 
 
-def compute_dev_nm_use_time(usage_time_in_months, balance, norm):
-    g = balance * (usage_time_in_months / 12) * norm
-    return g
+def compute_dev_nm_use_time(usage_time_in_months, balance, norm, name):
+    val = balance * (usage_time_in_months / 12) * norm
+    print(f"НеМатеріальнаАммортизація1[\"{name}\"] = {balance} * ({usage_time_in_months} / 12) * {norm} = {val}")
+    return val
 
 
 def pz_t():
@@ -44,6 +49,8 @@ def pz_t():
 
 
 def pz_3(preset):
+    # TODO: Also output initial data
+    # TODO: verify calc output is correct
     # MARK: Part 2
     nonmaterial_ammortization_norm = 0.12
     other_costs_coeff = 2.0
@@ -52,15 +59,23 @@ def pz_3(preset):
     tariff_data = {1: 1.1, 2: 1.1, 3: 1.35, 4: 1.5, 5: 1.7, 6: 2.0, 7: 2.2, 8: 2.4}
     main_costs_data = [["Записування на носій копії ПЗ", 10.0 / 60, 3, 29.2],
                        ["Упаковування носія", 20.0 / 60, 2, 29.2]]
+
     main_costs = [price * time * tariff_data[rank] for name, time, rank, price in main_costs_data]
+    for name, time, rank, price in main_costs_data:
+        print(
+            f"ВартістьОперації[\"{name}\"] = {price} * {time} * {tariff_data[rank]} = {price * time * tariff_data[rank]}")
 
     worker_costs_total = sum(main_costs)
+    worker_costs_total_str = get_sum_string(main_costs)
+    print(f"ОсновнаЗПРобітників = {worker_costs_total_str} = {worker_costs_total}")
 
     additional_pay_norm = 0.15
 
     worker_additional_pay = worker_costs_total * additional_pay_norm
+    print(f"ДодатковаЗПРобітників = {worker_costs_total} * {additional_pay_norm} = {worker_additional_pay}")
 
     worker_pay_accrual = (worker_additional_pay + worker_costs_total) * 0.22
+    print(f"НарахуванняНаЗПРобітників = ({worker_additional_pay} + {worker_costs_total}) * 0.22 = {worker_pay_accrual}")
 
     time_sum = sum(list(zip(*main_costs_data))[1])
     ammortization_deductions_data = [["ПК", 10000, 2, time_sum / 8 / 20],
@@ -69,14 +84,19 @@ def pz_3(preset):
 
     ammortization_deductions_data_nm = [["ПЗ", 7000, 2, time_sum / 8 / 20]]
 
-    ammortization_deductions_nm = [compute_nm_am_deductions(time_usage, base_cost, nonmaterial_ammortization_norm) for
+    ammortization_deductions_nm = [compute_nm_am_deductions(time_usage, base_cost, nonmaterial_ammortization_norm, name)
+                                   for
                                    name, base_cost, _, time_usage in
                                    ammortization_deductions_data_nm]
 
-    ammortization_deductions = [compute_am_deductions(time_usage, base_cost, expl_time) for
+    ammortization_deductions = [compute_am_deductions(time_usage, base_cost, expl_time, name) for
                                 name, base_cost, expl_time, time_usage in
                                 ammortization_deductions_data]
     ammortization_deductions_sum = sum(ammortization_deductions) + sum(ammortization_deductions_nm)
+    ammortization_deductions_sum_str = get_sum_string(ammortization_deductions)
+    ammortization_deductions_nm_str = get_sum_string(ammortization_deductions_nm)
+    print(
+        f"Аммортизація2 = ({ammortization_deductions_sum_str}) + ({ammortization_deductions_nm_str}) = {ammortization_deductions_sum}")
 
     kvpi = 1.
     kv_cost = 0.9
@@ -87,19 +107,31 @@ def pz_3(preset):
 
     electricity_costs = [kw_usage * time * kv_cost * kvpi / kpd for [_, kw_usage, time], kpd in
                          zip(electricity_costs_data, kpd_data)]
+    for [name, kw_usage, time], kpd in zip(electricity_costs_data, kpd_data):
+        print(
+            f"ВитратиЕлектроенергії2[\"{name}\"] = {kw_usage} * {time} * {kv_cost} * {kvpi} / {kpd} = {kw_usage * time * kv_cost * kvpi / kpd}")
 
     electricity_costs_sum = sum(electricity_costs)
+    electricity_costs_sum_str = get_sum_string(electricity_costs)
+    print(f"СумаВитратЕлектроенергії2 = {electricity_costs_sum_str} = {electricity_costs_sum}")
 
     other_costs = other_costs_coeff * worker_costs_total
+    print(f"ІншіВитрати2 = {other_costs_coeff} * {worker_costs_total} = {other_costs}")
 
-    planned_sale_costs = .05
+    planned_sale_costs_coeff = .05
 
-    production_costs = worker_costs_total + worker_additional_pay + worker_pay_accrual \
-                       + ammortization_deductions_sum \
+    production_costs = worker_costs_total + worker_additional_pay + worker_pay_accrual + ammortization_deductions_sum \
                        + electricity_costs_sum
-    sale_costs = production_costs * planned_sale_costs
 
-    self_cost = production_costs * sale_costs
+    production_costs_str = get_sum_string(
+        [worker_costs_total, worker_additional_pay, worker_pay_accrual, ammortization_deductions_sum,
+         electricity_costs_sum])
+    print(f"ВитратиНаВиробництво = {production_costs_str} = {production_costs}")
+    sale_costs = production_costs * planned_sale_costs_coeff
+    print(f"ВитратиНаЗбут = {production_costs} * {planned_sale_costs_coeff} = {sale_costs}")
+
+    self_cost = production_costs + sale_costs
+    print(f"Собівартість = {production_costs} + {sale_costs} = {self_cost}")
 
     # MARK: Part 1
     transport_coeff = 1.1
@@ -107,11 +139,17 @@ def pz_3(preset):
                        ["Картридж для принтера", 2, 600],
                        ["Диск для здачі копій", 2, 30]]
     parts_cost = [n * c * transport_coeff for _, n, c in parts_cost_data]
+    for name, n, c in parts_cost_data:
+        print(f"ВитратиНаКомплектуючі[\"{name}\"] = {n} * {c} * {transport_coeff} = {n * c * transport_coeff}")
+
     parts_cost_sum = sum(parts_cost)
+    parts_cost_sum_str = get_sum_string(parts_cost)
+    print(f"СумаВитратНаКомплектуючі = {parts_cost_sum_str} = {parts_cost_sum}")
 
     average_days_per_month = 20.0
     develop_time_months = 2.0
     hours_per_day = 8.0
+    print(f"ЧасРозробки = 2 місяці")
 
     develop_time_days = average_days_per_month * develop_time_months
     develop_time_hours = develop_time_days * hours_per_day
@@ -120,13 +158,24 @@ def pz_3(preset):
                              ["Керівник проекту", 20000, develop_time_days]]
     # [[daily]]
     developers_daily = [monthly / average_days_per_month for _, monthly, days in developers_costs_data]
+    for name, monthly, days in developers_costs_data:
+        print(
+            f"ЩоденнаЗПРозробника[\"{name}\"] = {monthly} / {average_days_per_month} = {monthly / average_days_per_month}")
     # [[cost]]
     developers_cost = [monthly * days / average_days_per_month for _, monthly, days in developers_costs_data]
+    for name, monthly, days in developers_costs_data:
+        print(
+            f"ЗПРозробника[\"{name}\"] = {monthly} * {days} / {average_days_per_month} = {monthly * days / average_days_per_month}")
 
     developers_cost_total = sum(developers_cost)
+    developers_cost_total_str = get_sum_string(developers_cost)
+    print(f"СумаЗПРозробників = {developers_cost_total_str} = {developers_cost_total}")
 
     developers_additional_pay = developers_cost_total * additional_pay_norm
+    print(f"ДодатковаЗПРозробників = {developers_cost_total} * {additional_pay_norm} = {developers_additional_pay}")
     developers_pay_accrual = (developers_additional_pay + worker_costs_total) * 0.22
+    print(
+        f"НарахуванняНаЗПРозробників = ({developers_additional_pay} + {worker_costs_total}) * 0.22 = {developers_pay_accrual}")
 
     developer_ammortization_deductions_data = [["ПК", 10_000, 2, develop_time_months],
                                                ["ПК", 10_000, 2, develop_time_months],
@@ -138,15 +187,19 @@ def pz_3(preset):
     developer_ammortization_deductions_data_nm = [["ПЗ", 7_000, 2, develop_time_months]]
 
     developer_ammortization_deductions_nm = [
-        compute_dev_nm_use_time(time_months, base_cost, nonmaterial_ammortization_norm) for
+        compute_dev_nm_use_time(time_months, base_cost, nonmaterial_ammortization_norm, name) for
         name, base_cost, _, time_months in
         developer_ammortization_deductions_data_nm]
 
-    developer_ammortization_deductions = [compute_dev_use_time(time_months, base_cost, expl_time) for
+    developer_ammortization_deductions = [compute_dev_use_time(time_months, base_cost, expl_time, name) for
                                           name, base_cost, expl_time, time_months in
                                           developer_ammortization_deductions_data]
     developer_ammortization_deductions_sum = sum(developer_ammortization_deductions) + sum(
         developer_ammortization_deductions_nm)
+    developer_ammortization_deductions_str = get_sum_string(developer_ammortization_deductions)
+    developer_ammortization_deductions_nm_str = get_sum_string(developer_ammortization_deductions_nm)
+    print(
+        f"Аммортизація1 = ({developer_ammortization_deductions_str}) + ({developer_ammortization_deductions_nm_str}) = {developer_ammortization_deductions_sum}")
 
     developer_kpd_data = [0.87, 0.87, 0.9, 0.9]
     developer_electricity_costs_data = [["ПК", 0.2, develop_time_hours],
@@ -157,13 +210,25 @@ def pz_3(preset):
     developer_electricity_costs = [kw_usage * time_hours * kv_cost * kvpi / kpd for [_, kw_usage, time_hours], kpd in
                                    zip(developer_electricity_costs_data, developer_kpd_data)]
 
+    for [name, kw_usage, time_hours], kpd in zip(developer_electricity_costs_data, developer_kpd_data):
+        print(
+            f"ВитратиЕлектроенергії1[\"{name}\"] = {kw_usage} * {time_hours} * {kv_cost} * {kvpi} / {kpd} = {kw_usage * time_hours * kv_cost * kvpi / kpd}")
+
     developer_electricity_costs_sum = sum(developer_electricity_costs)
+    developer_electricity_costs_str = get_sum_string(developer_electricity_costs)
+    print(f"СумаВитратЕлектроенергії1 = {developer_electricity_costs_str} = {developer_electricity_costs_sum}")
 
     developer_other_costs = other_costs_coeff * developers_cost_total
+    print(f"ІншіВитрати1 = {other_costs_coeff} * {developers_cost_total} = {developer_other_costs}")
 
     all_developer_costs = parts_cost_sum + developers_cost_total + developer_other_costs \
-                          + developer_ammortization_deductions_sum \
-                          + developer_electricity_costs_sum + developers_pay_accrual
+                          + developer_ammortization_deductions_sum + developer_electricity_costs_sum \
+                          + developers_pay_accrual
+
+    all_developer_costs_str = get_sum_string(
+        [parts_cost_sum, developers_cost_total, developer_other_costs, developer_ammortization_deductions_sum,
+         developer_electricity_costs_sum, developers_pay_accrual])
+    print(f"ВитратиНаРозробку = {all_developer_costs_str} = {all_developer_costs}")
 
     # MARK: PART 1 TABLES
     default_tables_gap = 5
