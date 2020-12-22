@@ -177,6 +177,9 @@ def pz_3(preset):
     print(
         f"НарахуванняНаЗПРозробників = ({developers_additional_pay} + {worker_costs_total}) * 0.22 = {developers_pay_accrual}")
 
+    developer_other_costs = other_costs_coeff * developers_cost_total
+    print(f"ІншіВитрати1 = {other_costs_coeff} * {developers_cost_total} = {developer_other_costs}")
+
     developer_ammortization_deductions_data = [["ПК", 10_000, 2, develop_time_months],
                                                ["ПК", 10_000, 2, develop_time_months],
                                                ["Принтер", 6_000, 2, (500 * 1 / 6) / 60 / 8 / 20],
@@ -217,9 +220,6 @@ def pz_3(preset):
     developer_electricity_costs_sum = sum(developer_electricity_costs)
     developer_electricity_costs_str = get_sum_string(developer_electricity_costs)
     print(f"СумаВитратЕлектроенергії1 = {developer_electricity_costs_str} = {developer_electricity_costs_sum}")
-
-    developer_other_costs = other_costs_coeff * developers_cost_total
-    print(f"ІншіВитрати1 = {other_costs_coeff} * {developers_cost_total} = {developer_other_costs}")
 
     all_developer_costs = parts_cost_sum + developers_cost_total + developer_other_costs \
                           + developer_ammortization_deductions_sum + developer_electricity_costs_sum \
