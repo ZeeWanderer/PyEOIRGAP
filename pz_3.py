@@ -59,6 +59,9 @@ def pz_3(preset):
     tariff_data = {1: 1.1, 2: 1.1, 3: 1.35, 4: 1.5, 5: 1.7, 6: 2.0, 7: 2.2, 8: 2.4}
     main_costs_data = [["Записування на носій копії ПЗ", 10.0 / 60, 3, 29.2],
                        ["Упаковування носія", 20.0 / 60, 2, 29.2]]
+    if preset == "max":
+        main_costs_data = [["Записування на носій копії ПЗ", 11.0 / 60, 3, 29.2],
+                           ["Упаковування носія", 21.0 / 60, 2, 29.2]]
 
     main_costs = [price * time * tariff_data[rank] for name, time, rank, price in main_costs_data]
     for name, time, rank, price in main_costs_data:
@@ -78,11 +81,18 @@ def pz_3(preset):
     print(f"НарахуванняНаЗПРобітників = ({worker_additional_pay} + {worker_costs_total}) * 0.22 = {worker_pay_accrual}")
 
     time_sum = sum(list(zip(*main_costs_data))[1])
-    ammortization_deductions_data = [["ПК", 10000, 2, time_sum / 8 / 20],
-                                     ["Принтер", 6000, 2, time_sum / 8 / 20],
-                                     ["Будівля", 100000, 20, time_sum / 8 / 20]]
+    ammortization_deductions_data = [["ПК", 10_000, 2, time_sum / 8 / 20],
+                                     ["Принтер", 6_000, 2, time_sum / 8 / 20],
+                                     ["Будівля", 100_000, 20, time_sum / 8 / 20]]
 
-    ammortization_deductions_data_nm = [["ПЗ", 7000, 2, time_sum / 8 / 20]]
+    ammortization_deductions_data_nm = [["ПЗ", 7_000, 2, time_sum / 8 / 20]]
+
+    if preset == "max":
+        ammortization_deductions_data = [["ПК", 11_000, 2, time_sum / 8 / 20],
+                                         ["Принтер", 6_500, 2, time_sum / 8 / 20],
+                                         ["Будівля", 110_000, 20, time_sum / 8 / 20]]
+
+        ammortization_deductions_data_nm = [["ПЗ", 7600, 2, time_sum / 8 / 20]]
 
     ammortization_deductions_nm = [compute_nm_am_deductions(time_usage, base_cost, nonmaterial_ammortization_norm, name)
                                    for
@@ -104,6 +114,10 @@ def pz_3(preset):
     electricity_costs_data = [["ПК", 0.2, time_sum],
                               ["Лампочки", 0.1, time_sum / 2],
                               ["Принтер", 0.050, 20.0 / 60]]
+    if preset == "max":
+        electricity_costs_data = [["ПК", 0.21, time_sum],
+                                  ["Лампочки", 0.1, time_sum / 2],
+                                  ["Принтер", 0.050, 21.0 / 60]]
 
     electricity_costs = [kw_usage * time * kv_cost * kvpi / kpd for [_, kw_usage, time], kpd in
                          zip(electricity_costs_data, kpd_data)]
@@ -138,6 +152,12 @@ def pz_3(preset):
     parts_cost_data = [["Бумага для друку", 500, 24.90 / 100],
                        ["Картридж для принтера", 2, 600],
                        ["Диск для здачі копій", 2, 30]]
+
+    if preset == "max":
+        parts_cost_data = [["Бумага для друку", 400, 24.90 / 100],
+                           ["Картридж для принтера", 2, 650],
+                           ["Диск для здачі копій", 2, 35]]
+
     parts_cost = [n * c * transport_coeff for _, n, c in parts_cost_data]
     for name, n, c in parts_cost_data:
         print(f"ВитратиНаКомплектуючі[\"{name}\"] = {n} * {c} * {transport_coeff} = {n * c * transport_coeff}")
@@ -154,8 +174,13 @@ def pz_3(preset):
     develop_time_days = average_days_per_month * develop_time_months
     develop_time_hours = develop_time_days * hours_per_day
     # [[name, monthly, days worked total]]
-    developers_costs_data = [["Инженер", 15000, develop_time_days],
-                             ["Керівник проекту", 20000, develop_time_days]]
+    developers_costs_data = [["Инженер", 15_000, develop_time_days],
+                             ["Керівник проекту", 20_000, develop_time_days]]
+
+    if preset == "max":
+        developers_costs_data = [["Инженер", 14_000, develop_time_days],
+                                 ["Керівник проекту", 19_000, develop_time_days]]
+
     # [[daily]]
     developers_daily = [monthly / average_days_per_month for _, monthly, days in developers_costs_data]
     for name, monthly, days in developers_costs_data:
@@ -189,6 +214,16 @@ def pz_3(preset):
 
     developer_ammortization_deductions_data_nm = [["ПЗ", 7_000, 2, develop_time_months]]
 
+    if preset == "max":
+        developer_ammortization_deductions_data = [["ПК", 11_000, 2, develop_time_months],
+                                                   ["ПК", 11_000, 2, develop_time_months],
+                                                   ["Принтер", 6_500, 2, (500 * 1 / 6) / 60 / 8 / 20],
+                                                   # 500 pages, 6 pages per minute
+                                                   ["Будівля", 110_000, 20, develop_time_months],
+                                                   ["Меблі", 21_000, 4, develop_time_months]]
+
+        developer_ammortization_deductions_data_nm = [["ПЗ", 7_600, 2, develop_time_months]]
+
     developer_ammortization_deductions_nm = [
         compute_dev_nm_use_time(time_months, base_cost, nonmaterial_ammortization_norm, name) for
         name, base_cost, _, time_months in
@@ -209,6 +244,13 @@ def pz_3(preset):
                                         ["ПК", 0.2, develop_time_hours],
                                         ["Лампочки", 0.1, develop_time_hours / 2],
                                         ["Принтер", 0.1, (500 * 1 / 6) / 60]]  # 500 pages, 6 pages per minute
+
+    if preset == "max":
+        developer_kpd_data = [0.87, 0.87, 0.9, 0.9]
+        developer_electricity_costs_data = [["ПК", 0.205, develop_time_hours],
+                                            ["ПК", 0.205, develop_time_hours],
+                                            ["Лампочки", 0.1, develop_time_hours / 2],
+                                            ["Принтер", 0.1, (400 * 1 / 6) / 60]]  # 400 pages, 6 pages per minute
 
     developer_electricity_costs = [kw_usage * time_hours * kv_cost * kvpi / kpd for [_, kw_usage, time_hours], kpd in
                                    zip(developer_electricity_costs_data, developer_kpd_data)]
