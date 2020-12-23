@@ -304,8 +304,8 @@ def pz_3(preset):
     for row_i, [name, monthly, days_worked_total], amount_daily, dev_cost in zip(range(0, len(developers_costs_data)),
                                                                                  developers_costs_data,
                                                                                  developers_daily, developers_cost):
-        print(f"{row_i}, {name}, {monthly}, {days_worked_total}, {amount_daily}, {dev_cost}")
-        arr_ = [name, monthly, days_worked_total, amount_daily, dev_cost]
+        # print(f"{row_i}, {name}, {monthly}, {days_worked_total}, {amount_daily}, {dev_cost}")
+        arr_ = [name, monthly, amount_daily, days_worked_total, dev_cost]
         for col_i, val in zip(range(0, len(arr_)), arr_):
             worksheet.write(row_i + row, col_i, val, format)
 
