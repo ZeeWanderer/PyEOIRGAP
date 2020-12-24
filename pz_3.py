@@ -112,20 +112,20 @@ def pz_3(preset):
     kvpi = 1.
     kv_cost = 0.9
     kpd_data = [0.87, 0.9, 0.9]
-    printer_usage_time = 20.0
+    printer_usage_time_minutes = 20.0
     electricity_costs_data = [["ПК", 0.2, time_sum],
                               ["Лампочки", 0.1, time_sum / 2],
-                              ["Принтер", 0.050, printer_usage_time / 60]]
+                              ["Принтер", 0.050, printer_usage_time_minutes / 60]]
     if preset == "max":
-        printer_usage_time = 21.0
+        printer_usage_time_minutes = 21.0
         electricity_costs_data = [["ПК", 0.21, time_sum],
                                   ["Лампочки", 0.1, time_sum / 2],
-                                  ["Принтер", 0.050, printer_usage_time / 60]]
+                                  ["Принтер", 0.050, printer_usage_time_minutes / 60]]
 
     print(f"Час використання кожного з активів (годин): \n"
           f"ПК - {time_sum}\n"
           f"Лампочки - {time_sum} / 2 = {time_sum / 2}\n"
-          f"Принтер - {printer_usage_time} / 60 = {printer_usage_time / 60}")
+          f"Принтер - {printer_usage_time_minutes} / 60 = {printer_usage_time_minutes / 60}")
 
     electricity_costs = [kw_usage * time * kv_cost * kvpi / kpd for [_, kw_usage, time], kpd in
                          zip(electricity_costs_data, kpd_data)]
@@ -213,11 +213,11 @@ def pz_3(preset):
     developer_other_costs = other_costs_coeff * developers_cost_total
     print(f"ІншіВитрати1 = {other_costs_coeff} * {developers_cost_total} = {developer_other_costs}")
 
-    developer_printer_usage_time = 500 * 1 / 6
+    developer_printer_usage_time_minutes = 500 * 1 / 6
 
     developer_ammortization_deductions_data = [["ПК", 10_000, 2, develop_time_months],
                                                ["ПК", 10_000, 2, develop_time_months],
-                                               ["Принтер", 6_000, 2, developer_printer_usage_time / 60 / 8 / 20],
+                                               ["Принтер", 6_000, 2, developer_printer_usage_time_minutes / 60 / 8 / 20],
                                                # 500 pages, 6 pages per minute
                                                ["Будівля", 100_000, 20, develop_time_months],
                                                ["Меблі", 22_000, 4, develop_time_months]]
@@ -225,10 +225,10 @@ def pz_3(preset):
     developer_ammortization_deductions_data_nm = [["ПЗ", 7_000, 2, develop_time_months]]
 
     if preset == "max":
-        developer_printer_usage_time = 400 * 1 / 6
+        developer_printer_usage_time_minutes = 400 * 1 / 6
         developer_ammortization_deductions_data = [["ПК", 11_000, 2, develop_time_months],
                                                    ["ПК", 11_000, 2, develop_time_months],
-                                                   ["Принтер", 6_500, 2, developer_printer_usage_time / 60 / 8 / 20],
+                                                   ["Принтер", 6_500, 2, developer_printer_usage_time_minutes / 60 / 8 / 20],
                                                    # 500 pages, 6 pages per minute
                                                    ["Будівля", 110_000, 20, develop_time_months],
                                                    ["Меблі", 21_000, 4, develop_time_months]]
@@ -237,7 +237,7 @@ def pz_3(preset):
 
     print(f"Час використання кожного з активів (місяців): \n"
           f"ПК - {develop_time_months}\n"
-          f"Принтер - {develop_time_hours} / 60 / 8 / 20 = {develop_time_hours / 60 / 8 / 20}\n"
+          f"Принтер - {developer_printer_usage_time_minutes} / 60 / 8 / 20 = {developer_printer_usage_time_minutes / 60 / 8 / 20}\n"
           f"Будівля - {develop_time_months}\n"
           f"Меблі - {develop_time_months}")
 
@@ -261,19 +261,19 @@ def pz_3(preset):
     developer_electricity_costs_data = [["ПК", 0.2, develop_time_hours],
                                         ["ПК", 0.2, develop_time_hours],
                                         ["Лампочки", 0.1, develop_time_hours / 2],
-                                        ["Принтер", 0.1, developer_printer_usage_time / 60]]  # 500 pages, 6 pages per minute
+                                        ["Принтер", 0.1, developer_printer_usage_time_minutes / 60]]  # 500 pages, 6 pages per minute
 
     if preset == "max":
         developer_kpd_data = [0.87, 0.87, 0.9, 0.9]
         developer_electricity_costs_data = [["ПК", 0.205, develop_time_hours],
                                             ["ПК", 0.205, develop_time_hours],
                                             ["Лампочки", 0.1, develop_time_hours / 2],
-                                            ["Принтер", 0.1, developer_printer_usage_time / 60]]  # 400 pages, 6 pages per minute
+                                            ["Принтер", 0.1, developer_printer_usage_time_minutes / 60]]  # 400 pages, 6 pages per minute
 
     print(f"Час використання кожного з активів (годин): \n"
           f"ПК - {develop_time_hours}\n"
           f"Лампочки - {develop_time_hours} / 2 = {develop_time_hours / 2}\n"
-          f"Принтер - {developer_printer_usage_time} / 60 = {developer_printer_usage_time / 60}")
+          f"Принтер - {developer_printer_usage_time_minutes} / 60 = {developer_printer_usage_time_minutes / 60}")
 
     developer_electricity_costs = [kw_usage * time_hours * kv_cost * kvpi / kpd for [_, kw_usage, time_hours], kpd in
                                    zip(developer_electricity_costs_data, developer_kpd_data)]
