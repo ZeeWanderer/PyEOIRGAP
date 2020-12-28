@@ -2,6 +2,11 @@ import xlsxwriter
 
 from util import get_sum_string
 
+# global variables:
+task_count = 1
+task_part = 1
+#
+
 
 def compute_am_deductions(usage_time_in_months, balance, years, name):
     val = balance / years / 12 * usage_time_in_months
@@ -25,6 +30,12 @@ def compute_dev_nm_use_time(usage_time_in_months, balance, norm, name):
     val = balance * (usage_time_in_months / 12) * norm
     print(f"НеМатеріальнаАммортизація1[\"{name}\"] = {balance} * ({usage_time_in_months} / 12) * {norm} = {val}")
     return val
+
+
+def print_task_header(task_message):
+    global task_count
+    print(f"3.{task_part}.{task_count} Розрахунок {task_message}:")
+    task_count += 1
 
 
 def pz_t():
@@ -52,9 +63,14 @@ def pz_3(preset):
     # TODO: Also output initial data
     # TODO: verify calc output is correct
     # MARK: Part 2
+    print("ЧАСТИНА 2")
+    global task_count, task_part
+    task_count = 1
+    task_part = 2
     nonmaterial_ammortization_norm = 0.12
     other_costs_coeff = 2.0
 
+    print_task_header("Витрат на заробітну плату робітників")
     # [[name, time(h), work rank, tariff, grn]...]
     tariff_data = {1: 1.1, 2: 1.1, 3: 1.35, 4: 1.5, 5: 1.7, 6: 2.0, 7: 2.2, 8: 2.4}
     main_costs_data = [["Записування на носій копії ПЗ", 10.0 / 60, 3, 29.2],
@@ -81,9 +97,11 @@ def pz_3(preset):
     print(f"НарахуванняНаЗПРобітників = ({worker_additional_pay} + {worker_costs_total}) * 0.22 = {worker_pay_accrual}")
 
     time_sum = sum(list(zip(*main_costs_data))[1])
+
+    print_task_header("Амортизаційних відрахувань для обладнання")
     ammortization_deductions_data = [["ПК", 10_000, 2, time_sum / 8 / 20],
                                      ["Принтер", 6_000, 2, time_sum / 8 / 20],
-                                     ["Будівля", 100_000, 20, time_sum / 8 / 20]]
+                                     ["Будівля", 150_000, 20, time_sum / 8 / 20]]
 
     ammortization_deductions_data_nm = [["ПЗ", 7_000, 2, time_sum / 8 / 20]]
 
@@ -109,6 +127,7 @@ def pz_3(preset):
     print(
         f"Аммортизація2 = ({ammortization_deductions_sum_str}) + ({ammortization_deductions_nm_str}) = {ammortization_deductions_sum}")
 
+    print_task_header("Витрат на електроенергію")
     kvpi = 1.
     kv_cost = 0.9
     kpd_data = [0.87, 0.9, 0.9]
@@ -137,9 +156,11 @@ def pz_3(preset):
     electricity_costs_sum_str = get_sum_string(electricity_costs)
     print(f"СумаВитратЕлектроенергії2 = {electricity_costs_sum_str} = {electricity_costs_sum}")
 
+    print_task_header("Інших витрат")
     other_costs = other_costs_coeff * worker_costs_total
     print(f"ІншіВитрати2 = {other_costs_coeff} * {worker_costs_total} = {other_costs}")
 
+    print_task_header("Витрат на виробництво та збут")
     planned_sale_costs_coeff = .05
 
     production_costs = worker_costs_total + worker_additional_pay + worker_pay_accrual + ammortization_deductions_sum \
@@ -152,11 +173,16 @@ def pz_3(preset):
     sale_costs = production_costs * planned_sale_costs_coeff
     print(f"ВитратиНаЗбут = {production_costs} * {planned_sale_costs_coeff} = {sale_costs}")
 
+    print_task_header("Собівартості")
     self_cost = production_costs + sale_costs
     print(f"Собівартість = {production_costs} + {sale_costs} = {self_cost}")
 
     # MARK: Part 1
+    print("ЧАСТИНА 1")
+    task_count = 1
+    task_part = 1
     transport_coeff = 1.1
+    print_task_header("Витрат на комплектуючі")
     parts_cost_data = [["Бумага для друку", 500, 24.90 / 100],
                        ["Картридж для принтера", 2, 600],
                        ["Диск для здачі копій", 2, 30]]
@@ -174,6 +200,7 @@ def pz_3(preset):
     parts_cost_sum_str = get_sum_string(parts_cost)
     print(f"СумаВитратНаКомплектуючі = {parts_cost_sum_str} = {parts_cost_sum}")
 
+    print_task_header("Витрат на заробітну плату розробників")
     average_days_per_month = 20.0
     develop_time_months = 2.0
     hours_per_day = 8.0
@@ -210,16 +237,18 @@ def pz_3(preset):
     print(
         f"НарахуванняНаЗПРозробників = ({developers_additional_pay} + {worker_costs_total}) * 0.22 = {developers_pay_accrual}")
 
+    print_task_header("Інших витрат")
     developer_other_costs = other_costs_coeff * developers_cost_total
     print(f"ІншіВитрати1 = {other_costs_coeff} * {developers_cost_total} = {developer_other_costs}")
 
+    print_task_header("Амортизаційних відрахувань")
     developer_printer_usage_time_minutes = 500 * 1 / 6
 
     developer_ammortization_deductions_data = [["ПК", 10_000, 2, develop_time_months],
                                                ["ПК", 10_000, 2, develop_time_months],
                                                ["Принтер", 6_000, 2, developer_printer_usage_time_minutes / 60 / 8 / 20],
                                                # 500 pages, 6 pages per minute
-                                               ["Будівля", 100_000, 20, develop_time_months],
+                                               ["Будівля", 150_000, 20, develop_time_months],
                                                ["Меблі", 22_000, 4, develop_time_months]]
 
     developer_ammortization_deductions_data_nm = [["ПЗ", 7_000, 2, develop_time_months]]
@@ -256,6 +285,7 @@ def pz_3(preset):
     print(
         f"Аммортизація1 = ({developer_ammortization_deductions_str}) + ({developer_ammortization_deductions_nm_str}) = {developer_ammortization_deductions_sum}")
 
+    print_task_header("Витрат на електроенергію")
     developer_kpd_data = [0.87, 0.87, 0.9, 0.9]
 
     developer_electricity_costs_data = [["ПК", 0.2, develop_time_hours],
@@ -286,6 +316,7 @@ def pz_3(preset):
     developer_electricity_costs_str = get_sum_string(developer_electricity_costs)
     print(f"СумаВитратЕлектроенергії1 = {developer_electricity_costs_str} = {developer_electricity_costs_sum}")
 
+    print_task_header("Витрат на розробку")
     all_developer_costs = parts_cost_sum + developers_cost_total + developer_other_costs \
                           + developer_ammortization_deductions_sum + developer_electricity_costs_sum \
                           + developers_pay_accrual
