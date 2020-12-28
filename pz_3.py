@@ -34,7 +34,7 @@ def compute_dev_nm_use_time(usage_time_in_months, balance, norm, name):
 
 def print_task_header(task_message):
     global task_count
-    print(f"3.{task_part}.{task_count} Розрахунок {task_message}:")
+    print(f"\n3.{task_part}.{task_count} Розрахунок {task_message}:")
     task_count += 1
 
 
