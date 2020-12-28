@@ -71,6 +71,7 @@ def pz_3(preset):
     other_costs_coeff = 2.0
 
     print_task_header("Витрат на заробітну плату робітників")
+    print("INSERT WORKERS_COST_DATA_TABLE FILE\n")
     # [[name, time(h), work rank, tariff, grn]...]
     tariff_data = {1: 1.1, 2: 1.1, 3: 1.35, 4: 1.5, 5: 1.7, 6: 2.0, 7: 2.2, 8: 2.4}
     main_costs_data = [["Записування на носій копії ПЗ", 10.0 / 60, 3, 29.2],
@@ -99,6 +100,7 @@ def pz_3(preset):
     time_sum = sum(list(zip(*main_costs_data))[1])
 
     print_task_header("Амортизаційних відрахувань для обладнання")
+    print("INSERT WORKERS_AMORTISATION_DEDUCTIONS_DATA_TABLE FILE\n")
     ammortization_deductions_data = [["ПК", 10_000, 2, time_sum / 8 / 20],
                                      ["Принтер", 6_000, 2, time_sum / 8 / 20],
                                      ["Будівля", 150_000, 20, time_sum / 8 / 20]]
@@ -128,6 +130,7 @@ def pz_3(preset):
         f"Аммортизація2 = ({ammortization_deductions_sum_str}) + ({ammortization_deductions_nm_str}) = {ammortization_deductions_sum}")
 
     print_task_header("Витрат на електроенергію")
+    print("INSERT WORKERS_ELECTRICITY_COSTS_DATA_TABLE FILE\n")
     kvpi = 1.
     kv_cost = 0.9
     kpd_data = [0.87, 0.9, 0.9]
@@ -183,6 +186,7 @@ def pz_3(preset):
     task_part = 1
     transport_coeff = 1.1
     print_task_header("Витрат на комплектуючі")
+    print("INSERT PARTS_COST_DATA_TABLE FILE\n")
     parts_cost_data = [["Бумага для друку", 500, 24.90 / 100],
                        ["Картридж для принтера", 2, 600],
                        ["Диск для здачі копій", 2, 30]]
@@ -201,6 +205,7 @@ def pz_3(preset):
     print(f"СумаВитратНаКомплектуючі = {parts_cost_sum_str} = {parts_cost_sum}")
 
     print_task_header("Витрат на заробітну плату розробників")
+    print("INSERT DEV_COST_DATA_TABLE FILE\n")
     average_days_per_month = 20.0
     develop_time_months = 2.0
     hours_per_day = 8.0
@@ -242,6 +247,7 @@ def pz_3(preset):
     print(f"ІншіВитрати1 = {other_costs_coeff} * {developers_cost_total} = {developer_other_costs}")
 
     print_task_header("Амортизаційних відрахувань")
+    print("INSERT DEV_AMORTISATION_DEDUCTIONS_DATA_TABLE FILE\n")
     developer_printer_usage_time_minutes = 500 * 1 / 6
 
     developer_ammortization_deductions_data = [["ПК", 10_000, 2, develop_time_months],
@@ -286,6 +292,7 @@ def pz_3(preset):
         f"Аммортизація1 = ({developer_ammortization_deductions_str}) + ({developer_ammortization_deductions_nm_str}) = {developer_ammortization_deductions_sum}")
 
     print_task_header("Витрат на електроенергію")
+    print("INSERT DEV_ELECTRICITY_COSTS_DATA_TABLE FILE\n")
     developer_kpd_data = [0.87, 0.87, 0.9, 0.9]
 
     developer_electricity_costs_data = [["ПК", 0.2, develop_time_hours],
@@ -330,7 +337,6 @@ def pz_3(preset):
     default_tables_gap = 5
 
     # MARK: developers_costs_data_table GENERATION
-    print("INSERT DEV_COST_DATA_TABLE FILE\n")
     workbook = xlsxwriter.Workbook(f'developers_costs_data_table_{preset}.xlsx')
     worksheet = workbook.add_worksheet()
 
@@ -371,7 +377,6 @@ def pz_3(preset):
 
     # TODO: all tables are written in one .xlsx file for now
     # MARK: developer_ammortization_deductions_data_table GENERATION
-    print("INSERT DEV_AMORTISATION_DEDUCTIONS_DATA_TABLE FILE\n")
     max_name_col_width = 0
     name_col_padding = 1
     developer_ammortization_deductions_data_table = ["Найменування обладнання", "Балансова вартість, грн",
@@ -408,7 +413,6 @@ def pz_3(preset):
     row += default_tables_gap
 
     # MARK: developer_electricity_costs_data_table GENERATION
-    print("INSERT DEV_ELECTRICITY_COSTS_DATA_TABLE FILE\n")
     developer_electricity_costs_data_table = ["Найменування обладнання", "Встановлена потужність, кВт.",
                                               "Тривалість роботи, год.", "Сума, грн"]
     for col in range(0, len(developer_electricity_costs_data_table)):
@@ -431,8 +435,6 @@ def pz_3(preset):
     row += default_tables_gap
 
     # MARK: parts_cost_data_table GENERATION
-    # WTF: is total needed here?
-    print("INSERT PARTS_COST_DATA_TABLE FILE\n")
     parts_cost_data_table_header = ["Найменування комплектуючих", "Кількість, шт.", "Ціна за штуку, грн", "Сума, грн"]
     for col in range(0, len(parts_cost_data_table_header)):
         worksheet.write(row, col, parts_cost_data_table_header[col], format_header)
@@ -459,7 +461,6 @@ def pz_3(preset):
     row += default_tables_gap
 
     # MARK: workers_costs_data_table GENERATION
-    print("INSERT WORKERS_COST_DATA_TABLE FILE\n")
     workers_costs_data_table_header = ["Найменування робіт",
                                        "Тривалість операції, год.",
                                        "Розряд роботи", "Тарифний коефіцієнт",
@@ -484,7 +485,6 @@ def pz_3(preset):
     row += default_tables_gap
 
     # MARK: workers_costs_data_table GENERATION
-    print("INSERT WORKERS_AMORTISATION_DEDUCTIONS_DATA_TABLE FILE\n")
     workers_ammortization_deductions_data_table = ["Найменування обладнання", "Балансова вартість, грн",
                                                    "Строк корисного використання, років",
                                                    "Термін використання обладнання, місяців",
@@ -518,16 +518,13 @@ def pz_3(preset):
 
     row += default_tables_gap
 
-    # TODO: some bug with table below
     # MARK: workers_electricity_costs_data_table GENERATION
-    print("INSERT WORKERS_ELECTRICITY_COSTS_DATA_TABLE FILE\n")
     workers_electricity_costs_data_table = ["Найменування обладнання", "Встановлена потужність, кВт.",
                                             "Тривалість роботи, год.", "Сума, грн"]
     for col in range(0, len(workers_electricity_costs_data_table)):
         worksheet.write(row, col, workers_electricity_costs_data_table[col], format_header)
 
     row += 1
-    # TODO: add the example of calculation to tables
     for row_i, [name, power, usage_time], kpd, worker_electricity_cost in \
             zip(range(0, len(electricity_costs_data)), electricity_costs_data, kpd_data,
                 electricity_costs):
@@ -544,7 +541,7 @@ def pz_3(preset):
 
     # MARK: overall_costs_table_header GENERATION
     # TODO: verify this is all correct
-    print("INSERT OVERALL_COSTS FILE\n")
+    print("\nINSERT OVERALL_COSTS FILE\n")
     overall_costs_table_header = ["Стаття витрат", "Умовне позначення", "Сума, грн", "Примітка"]
     costs_name_col = ["1.Витрати на матеріали на одиницю продукції, грн",
                       "2. Витрати на комплектуючі на одиницю продукції, грн",
