@@ -15,9 +15,9 @@ def pz_4(preset):
 
     full_self_cost = 30.0714609396552
     relative_q_koeff = 1.183787879
-    price_koeff = 0.6
+    price_koeff = 0.8
     analitical_production_koeff = 0.07
-    realisation_amount = 7000
+    realisation_amount = 8000
 
     # Капіталовкладення, Кприведене
     development_cost = 217960.8070208812
