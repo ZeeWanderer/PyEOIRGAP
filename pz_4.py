@@ -25,9 +25,9 @@ def pz_4(preset):
     if preset == UserPreset.max:
         full_self_cost = 31.7978875224138
         relative_q_koeff = 1.9756592520954221
-        price_koeff = 0.45
+        price_koeff = 0.9
         analitical_production_koeff = 0.07
-        realisation_amount = 4000
+        realisation_amount = 4700
 
         # Капіталовкладення, Кприведене
         development_cost = 205726.02887125162
