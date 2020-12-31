@@ -2,6 +2,11 @@ import pprint
 
 prettyp = pprint.PrettyPrinter(indent=4)
 
+from enum import Enum
+
+class UserPreset(Enum):
+    max = 0
+    sergey = 1
 
 def get_mul_sum_string(first: list, second: list):
     str_ = f"{' + '.join(f'({x.__round__(7)} * {y.__round__(7)})' for x, y in zip(first, second))}"

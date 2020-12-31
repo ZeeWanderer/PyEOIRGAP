@@ -1,4 +1,4 @@
-from util import get_sum_string, get_mul_sum_string
+from util import get_sum_string, get_mul_sum_string, UserPreset
 
 
 def compute_expet_opinions(expert_names, expert_opinions_given, arg_expnames):
@@ -107,14 +107,14 @@ def print_annotation(category_annotation: dict, expert_opinions: list, category_
             print(f"\t- {subcat} - Оцінки Експертів: {opinion_str}; Ваги Надані експертами: {weight_str}")
 
 
-def pz_1(preset):
+def pz_1(preset: UserPreset):
     print("Практична Робота #1:")
     print("Вхідні Дані:")
     arg_expnames = "АБВГД"
 
-    if preset == 'max':
+    if preset == UserPreset.max:
         arg_expnames = "ГДЖКМ"
-    if preset == 'sergey':
+    if preset == UserPreset.sergey:
         arg_expnames = "ВГДИМ"
 
     category_annotation = {

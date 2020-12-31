@@ -1,6 +1,6 @@
 import xlsxwriter
 
-from util import get_sum_string
+from util import get_sum_string, UserPreset
 
 # global variables:
 task_count = 1
@@ -59,7 +59,7 @@ def pz_t():
     t = 10
 
 
-def pz_3(preset):
+def pz_3(preset: UserPreset):
     # TODO: Also output initial data
     # TODO: verify calc output is correct
     # MARK: Part 2
@@ -76,7 +76,7 @@ def pz_3(preset):
     tariff_data = {1: 1.1, 2: 1.1, 3: 1.35, 4: 1.5, 5: 1.7, 6: 2.0, 7: 2.2, 8: 2.4}
     main_costs_data = [["Записування на носій копії ПЗ", 10.0 / 60, 3, 29.2],
                        ["Упаковування носія", 20.0 / 60, 2, 29.2]]
-    if preset == "max":
+    if preset == UserPreset.max:
         main_costs_data = [["Записування на носій копії ПЗ", 11.0 / 60, 3, 29.2],
                            ["Упаковування носія", 21.0 / 60, 2, 29.2]]
 
@@ -107,7 +107,7 @@ def pz_3(preset):
 
     ammortization_deductions_data_nm = [["ПЗ", 7_000, 2, time_sum / 8 / 20]]
 
-    if preset == "max":
+    if preset == UserPreset.max:
         ammortization_deductions_data = [["ПК", 11_000, 2, time_sum / 8 / 20],
                                          ["Принтер", 6_500, 2, time_sum / 8 / 20],
                                          ["Будівля", 110_000, 20, time_sum / 8 / 20]]
@@ -191,7 +191,7 @@ def pz_3(preset):
                        ["Картридж для принтера", 2, 600],
                        ["Диск для здачі копій", 2, 30]]
 
-    if preset == "max":
+    if preset == UserPreset.max:
         parts_cost_data = [["Бумага для друку", 400, 24.90 / 100],
                            ["Картридж для принтера", 2, 650],
                            ["Диск для здачі копій", 2, 35]]
@@ -217,7 +217,7 @@ def pz_3(preset):
     developers_costs_data = [["Инженер", 15_000, develop_time_days],
                              ["Керівник проекту", 20_000, develop_time_days]]
 
-    if preset == "max":
+    if preset == UserPreset.max:
         developers_costs_data = [["Инженер", 14_000, develop_time_days],
                                  ["Керівник проекту", 19_000, develop_time_days]]
 
@@ -259,7 +259,7 @@ def pz_3(preset):
 
     developer_ammortization_deductions_data_nm = [["ПЗ", 7_000, 2, develop_time_months]]
 
-    if preset == "max":
+    if preset == UserPreset.max:
         developer_printer_usage_time_minutes = 400 * 1 / 6
         developer_ammortization_deductions_data = [["ПК", 11_000, 2, develop_time_months],
                                                    ["ПК", 11_000, 2, develop_time_months],
@@ -337,7 +337,7 @@ def pz_3(preset):
     default_tables_gap = 5
 
     # MARK: developers_costs_data_table GENERATION
-    workbook = xlsxwriter.Workbook(f'developers_costs_data_table_{preset}.xlsx')
+    workbook = xlsxwriter.Workbook(f'developers_costs_data_table_{preset.name}.xlsx')
     worksheet = workbook.add_worksheet()
 
     format = workbook.add_format()

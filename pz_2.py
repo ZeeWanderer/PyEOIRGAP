@@ -1,8 +1,8 @@
 import xlsxwriter
-from util import get_sum_string, get_mul_sum_string
+from util import get_sum_string, get_mul_sum_string, UserPreset
 
 
-def pz_2(preset):
+def pz_2(preset: UserPreset):
     parameters = ["Час компіляції (Fibonacci) [μs]", "Час виконання (Fibonacci, 100000) [μs]",
                   "Обсяг програми (Fibonacci) [byte]", "Підтримка архітектур [шт]",
                   "Кількість базових типів даних [шт]"]
@@ -24,7 +24,7 @@ def pz_2(preset):
                   ((108 * 2.1).__round__(0), 108, -1),
                   (8, 8, 1), (1, 1, 1)]
 
-    if preset == "sergey":
+    if preset == UserPreset.sergey:
         parameters = ["", "", "", "", "", ""]
         expert_weight_opinins = [[0.05, 0.3, 0.15, 0.25, 0.1, 0.15],
                                  [0.05, 0.2, 0.2, 0.3, 0.1, 0.15],
@@ -69,7 +69,7 @@ def pz_2(preset):
 
     # write expert opinions excel file
     print("INSERT EXPERT_OPINIONS FILE\n")
-    workbook = xlsxwriter.Workbook(f'expert_opinions_{preset}.xlsx')
+    workbook = xlsxwriter.Workbook(f'expert_opinions_{preset.name}.xlsx')
     worksheet = workbook.add_worksheet()
 
     format = workbook.add_format()
@@ -144,7 +144,7 @@ def pz_2(preset):
 
     # write DELTA file
     print("INSERT DELTA FILE\n")
-    workbook = xlsxwriter.Workbook(f'delt_{preset}.xlsx')
+    workbook = xlsxwriter.Workbook(f'delt_{preset.name}.xlsx')
     worksheet = workbook.add_worksheet()
 
     format = workbook.add_format()
@@ -253,7 +253,7 @@ def pz_2(preset):
 
     # write SIGMA file
     print("INSERT SIGMA FILE\n")
-    workbook = xlsxwriter.Workbook(f'sigma_{preset}.xlsx')
+    workbook = xlsxwriter.Workbook(f'sigma_{preset.name}.xlsx')
     worksheet = workbook.add_worksheet()
 
     format = workbook.add_format()
@@ -319,7 +319,7 @@ def pz_2(preset):
 
     # write CMP file
     print("INSERT CMP FILE\n")
-    workbook = xlsxwriter.Workbook(f'cmp_{preset}.xlsx')
+    workbook = xlsxwriter.Workbook(f'cmp_{preset.name}.xlsx')
     worksheet = workbook.add_worksheet()
 
     format = workbook.add_format()
