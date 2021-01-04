@@ -1,11 +1,18 @@
 from util import UserPreset, get_sum_string
 
 
+def get_named_arr_sum_str(name="РічнийДохід", iStart=1, iEnd=4):
+    str_ = ""
+    for i in range(iStart, iEnd):
+        str_ += f"{name}[{i}] + "
+    str_ = str_[0:len(str_)-3]
+    return str_
+
+
 def pz_4(preset):
     print("Початкові дані:")
     # норматив рентабельності
     profitability_norm = 0.55
-
 
     discount_rate = 0.2
     years_percentage = [0.70, 0.2, 0.1]
@@ -35,7 +42,7 @@ def pz_4(preset):
 
     print(f"СтавкаДисконту = {discount_rate}")
     print(f"СтавкаПодатку = {tax_rate_general}")
-    print(f"АналітичнийКоефіціент = {analitical_production_koeff}")
+    print(f"АналітичнийКоефіцієнт = {analitical_production_koeff}")
     print(f"КількістьРеалізації = {realisation_amount}")
     print(f"ТермінРеалізації = {years} роки")
     print(f"РічнийВідсотокДоходу = {years_percentage}")
@@ -69,6 +76,7 @@ def pz_4(preset):
 
     print("4.2 Оцінювання ефективності інноваційного рішення")
     yearly_income = [realisation_amount * selected_price_no_taxes * x for x in years_percentage]
+
     for x, t in zip(years_percentage, range(1, years+1)):
         print(f"РічнийДохід[{t}] = {realisation_amount} * {selected_price_no_taxes} * {x} = {realisation_amount * selected_price_no_taxes * x}")
 
