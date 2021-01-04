@@ -2,6 +2,7 @@ from util import UserPreset, get_sum_string
 
 
 def pz_4(preset):
+    print("Початкові дані:")
     # норматив рентабельності
     profitability_norm = 0.55
 
@@ -21,6 +22,16 @@ def pz_4(preset):
 
     # Капіталовкладення, Кприведене
     development_cost = 217960.8070208812
+
+    print(f"СтавкаДисконту = {discount_rate}")
+    print(f"СтавкаПодатку = {tax_rate_general}")
+    print(f"АналітичнийКоефіціент = {analitical_production_koeff}")
+    print(f"КількістьРеалізації = {analitical_production_koeff}")
+    print(f"РічнийВідсотокДоходу = {years_percentage}")
+
+    print(f"КапіталовкладенняПриведене = {development_cost}, взято з 3 практичної")
+    print(f"ПовнаСобівартість = {full_self_cost}, взято з 3 практичної")
+    print(f"ВідноснийПоказникЯкості = {relative_q_koeff}, взято з 3 практичної")
 
     if preset == UserPreset.max:
         full_self_cost = 31.7978875224138
