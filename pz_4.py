@@ -40,6 +40,7 @@ def pz_4(preset):
         # Капіталовкладення, Кприведене
         development_cost = 205726.02887125162
 
+    print(f"НормаРентабельності = {profitability_norm}")
     print(f"СтавкаДисконту = {discount_rate}")
     print(f"СтавкаПодатку = {tax_rate_general}")
     print(f"АналітичнийКоефіцієнт = {analitical_production_koeff}")
