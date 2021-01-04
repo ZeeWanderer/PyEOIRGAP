@@ -90,11 +90,11 @@ def pz_4(preset):
     GPprivedene = NVP_arr
     GPprivedene_sum = sum(GPprivedene)
     GPprivedene_sum_str = get_sum_string(GPprivedene)
-    print(f"СумаГПприв = {GPprivedene_sum_str} = {GPprivedene_sum}")
+    print(f"СумаГПприв = {get_named_arr_sum_str(name='ГП')} = {GPprivedene_sum_str} = {GPprivedene_sum}")
 
     NVP = sum(NVP_arr) - development_cost
     NVP_sum_str = get_sum_string(NVP_arr)
-    print(f"NVP = ({yearly_income_str}) - Капіталовкладення = ({NVP_sum_str}) - {development_cost} = {NVP}")
+    print(f"NVP = СумаГПприв - Капіталовкладення = ({NVP_sum_str}) - {development_cost} = {NVP}")
     
     profitability_index = GPprivedene_sum/development_cost
     print(f"ІндексДохідності = СумаГПприв / КапіталовкладенняПриведене = {GPprivedene_sum}/{development_cost} = {profitability_index}")
