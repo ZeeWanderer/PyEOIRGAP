@@ -23,6 +23,16 @@ def pz_4(preset):
     # Капіталовкладення, Кприведене
     development_cost = 217960.8070208812
 
+    if preset == UserPreset.max:
+        full_self_cost = 31.7978875224138
+        relative_q_koeff = 1.9756592520954221
+        price_koeff = 0.9
+        analitical_production_koeff = 0.07
+        realisation_amount = 4700
+
+        # Капіталовкладення, Кприведене
+        development_cost = 205726.02887125162
+
     print(f"СтавкаДисконту = {discount_rate}")
     print(f"СтавкаПодатку = {tax_rate_general}")
     print(f"АналітичнийКоефіціент = {analitical_production_koeff}")
@@ -33,16 +43,6 @@ def pz_4(preset):
     print(f"КапіталовкладенняПриведене = {development_cost}, взято з 3 практичної")
     print(f"ПовнаСобівартість = {full_self_cost}, взято з 3 практичної")
     print(f"ВідноснийПоказникЯкості = {relative_q_koeff}, взято з 3 практичної")
-
-    if preset == UserPreset.max:
-        full_self_cost = 31.7978875224138
-        relative_q_koeff = 1.9756592520954221
-        price_koeff = 0.9
-        analitical_production_koeff = 0.07
-        realisation_amount = 4700
-
-        # Капіталовкладення, Кприведене
-        development_cost = 205726.02887125162
 
     print("4.1 Визначення ціни та критичного обсягу виробництва інноваційного виробу")
     price_lower_bound = full_self_cost * (1 + profitability_norm) * (1 + tax_rate_general)
@@ -69,12 +69,18 @@ def pz_4(preset):
 
     print("4.2 Оцінювання ефективності інноваційного рішення")
     yearly_income = [realisation_amount * selected_price_no_taxes * x for x in years_percentage]
+    for x, t in zip(years_percentage, range(1, years+1)):
+        print(f"РічнийДохід[{t}] = {realisation_amount} * {selected_price_no_taxes} * {x} = {realisation_amount * selected_price_no_taxes * x}")
+
+    for yi, t in zip(yearly_income, range(1, years+1)):
+        print(f"ГП[{t}] = {yi}/(1+{discount_rate})**{t} = {yi/(1+discount_rate)**t}")
 
     NVP_arr = [yi/(1+discount_rate)**t for yi, t in zip(yearly_income, range(1, years+1))]
+    # for yi, t in zip(yearly_income, range(1, years+1)):
+    #     print(f"ГП[{t}] = {}")
     NVP = sum(NVP_arr) - development_cost
     NVP_sum_str = get_sum_string(NVP_arr)
     print(f"NVP = ({NVP_sum_str}) - {development_cost} = {NVP}")
-
     GPprivedene = NVP_arr
     GPprivedene_sum = sum(GPprivedene)
     GPprivedene_sum_str = get_sum_string(GPprivedene)
