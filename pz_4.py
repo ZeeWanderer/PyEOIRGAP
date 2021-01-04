@@ -1,7 +1,7 @@
 from util import UserPreset, get_sum_string
 
 
-def get_named_arr_sum_str(name="РічнийДохід", iStart=1, iEnd=4):
+def get_named_arr_sum_str(name="РічнийПрибуток", iStart=1, iEnd=4):
     str_ = ""
     for i in range(iStart, iEnd):
         str_ += f"{name}[{i}] + "
@@ -77,13 +77,13 @@ def pz_4(preset):
 
     print("4.2 Оцінювання ефективності інноваційного рішення")
     yearly_income_str = get_named_arr_sum_str()
-    yearly_income = [realisation_amount * selected_price_no_taxes * x for x in years_percentage]
+    yearly_income = [realisation_amount * (selected_price_no_taxes - full_self_cost) * x for x in years_percentage]
 
     for x, t in zip(years_percentage, range(1, years+1)):
-        print(f"РічнийДохід[{t}] = {realisation_amount} * {selected_price_no_taxes} * {x} = {realisation_amount * selected_price_no_taxes * x}")
+        print(f"РічнийПрибуток[{t}] = {realisation_amount} * {x} * ({selected_price_no_taxes} - {full_self_cost}) = {realisation_amount * (selected_price_no_taxes - full_self_cost) * x}")
 
     for yi, t in zip(yearly_income, range(1, years+1)):
-        print(f"ГП[{t}] = РічнийДохід[{t}]/(1+СтавкаДисконту)**{t} = {yi}/(1+{discount_rate})**{t} = {yi/(1+discount_rate)**t}")
+        print(f"ГП[{t}] = РічнийПрибуток[{t}]/(1+СтавкаДисконту)**{t} = {yi}/(1+{discount_rate})**{t} = {yi/(1+discount_rate)**t}")
 
     NVP_arr = [yi/(1+discount_rate)**t for yi, t in zip(yearly_income, range(1, years+1))]
 
