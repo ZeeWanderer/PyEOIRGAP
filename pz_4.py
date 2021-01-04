@@ -76,13 +76,14 @@ def pz_4(preset):
         f" = {analitical_production}")
 
     print("4.2 Оцінювання ефективності інноваційного рішення")
+    yearly_income_str = get_named_arr_sum_str()
     yearly_income = [realisation_amount * selected_price_no_taxes * x for x in years_percentage]
 
     for x, t in zip(years_percentage, range(1, years+1)):
         print(f"РічнийДохід[{t}] = {realisation_amount} * {selected_price_no_taxes} * {x} = {realisation_amount * selected_price_no_taxes * x}")
 
     for yi, t in zip(yearly_income, range(1, years+1)):
-        print(f"ГП[{t}] = {yi}/(1+{discount_rate})**{t} = {yi/(1+discount_rate)**t}")
+        print(f"ГП[{t}] = РічнийДохід[{t}]/(1+СтавкаДисконту)**{t} = {yi}/(1+{discount_rate})**{t} = {yi/(1+discount_rate)**t}")
 
     NVP_arr = [yi/(1+discount_rate)**t for yi, t in zip(yearly_income, range(1, years+1))]
 
@@ -93,19 +94,19 @@ def pz_4(preset):
 
     NVP = sum(NVP_arr) - development_cost
     NVP_sum_str = get_sum_string(NVP_arr)
-    print(f"NVP = ({NVP_sum_str}) - {development_cost} = {NVP}")
+    print(f"NVP = ({yearly_income_str}) - Капіталовкладення = ({NVP_sum_str}) - {development_cost} = {NVP}")
     
     profitability_index = GPprivedene_sum/development_cost
-    print(f"ІндексДохідності = {GPprivedene_sum}/{development_cost} = {profitability_index}")
+    print(f"ІндексДохідності = СумаГПприв / КапіталовкладенняПриведене = {GPprivedene_sum}/{development_cost} = {profitability_index}")
 
     GPprivedene_mean_average = GPprivedene_sum/years
-    print(f"ГПприв_сер = {GPprivedene_sum}/{years} = {GPprivedene_mean_average}")
+    print(f"ГПприв_сер = СумаГПприв / ТермінРеалізації = {GPprivedene_sum}/{years} = {GPprivedene_mean_average}")
     payback_period = development_cost/GPprivedene_mean_average
-    print(f"ТермінОкупності = {development_cost}/{GPprivedene_mean_average} = {payback_period}")
+    print(f"ТермінОкупності = КапіталовкладенняПриведене / ГПприв_сер = {development_cost}/{GPprivedene_mean_average} = {payback_period}")
 
     yearly_sum_str = get_sum_string(yearly_income)
     IRRmin = (sum(yearly_income)/development_cost)**(1/years) - 1
-    print(f"IRRmin = (({yearly_sum_str})/{development_cost})**(1/{years}) - 1 = {IRRmin}")
+    print(f"IRRmin = (({yearly_income_str}) / КапіталовкладенняПриведене) ** (1/{years}) - 1 = (({yearly_sum_str})/{development_cost})**(1/{years}) - 1 = {IRRmin}")
 
 
     t = 4
