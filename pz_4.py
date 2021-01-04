@@ -76,15 +76,16 @@ def pz_4(preset):
         print(f"ГП[{t}] = {yi}/(1+{discount_rate})**{t} = {yi/(1+discount_rate)**t}")
 
     NVP_arr = [yi/(1+discount_rate)**t for yi, t in zip(yearly_income, range(1, years+1))]
-    # for yi, t in zip(yearly_income, range(1, years+1)):
-    #     print(f"ГП[{t}] = {}")
-    NVP = sum(NVP_arr) - development_cost
-    NVP_sum_str = get_sum_string(NVP_arr)
-    print(f"NVP = ({NVP_sum_str}) - {development_cost} = {NVP}")
+
     GPprivedene = NVP_arr
     GPprivedene_sum = sum(GPprivedene)
     GPprivedene_sum_str = get_sum_string(GPprivedene)
     print(f"СумаГПприв = {GPprivedene_sum_str} = {GPprivedene_sum}")
+
+    NVP = sum(NVP_arr) - development_cost
+    NVP_sum_str = get_sum_string(NVP_arr)
+    print(f"NVP = ({NVP_sum_str}) - {development_cost} = {NVP}")
+    
     profitability_index = GPprivedene_sum/development_cost
     print(f"ІндексДохідності = {GPprivedene_sum}/{development_cost} = {profitability_index}")
 
