@@ -27,6 +27,7 @@ def pz_4(preset):
     print(f"СтавкаПодатку = {tax_rate_general}")
     print(f"АналітичнийКоефіціент = {analitical_production_koeff}")
     print(f"КількістьРеалізації = {analitical_production_koeff}")
+    print(f"ТермінРеалізації = {years} роки")
     print(f"РічнийВідсотокДоходу = {years_percentage}")
 
     print(f"КапіталовкладенняПриведене = {development_cost}, взято з 3 практичної")
